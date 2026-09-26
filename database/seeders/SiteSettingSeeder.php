@@ -40,6 +40,14 @@ class SiteSettingSeeder extends Seeder
             ['key' => 'hero_btn_primary',  'value' => 'Book Appointment', 'type' => 'text', 'group' => 'hero', 'label' => 'Hero Primary Button Label'],
             ['key' => 'hero_btn_secondary','value' => 'Our Services',     'type' => 'text', 'group' => 'hero', 'label' => 'Hero Secondary Button Label'],
 
+            // Hero video — paste a YouTube or Vimeo URL (e.g. https://youtu.be/xxx or https://vimeo.com/xxx)
+            // The front-end auto-converts it to an embed URL and renders an inline player.
+            ['key' => 'hero_video', 'value' => '', 'type' => 'text', 'group' => 'hero', 'label' => 'Hero Video URL (YouTube / Vimeo — doctor speaking)'],
+            // Hero video orientation: 'portrait' (9:16 tall card) or 'landscape' (16:9 wide card)
+            ['key' => 'hero_video_orientation', 'value' => 'landscape', 'type' => 'text', 'group' => 'hero', 'label' => 'Hero Video Orientation (portrait or landscape)'],
+            // Hero video orientation — set to "portrait" for vertical/short-form videos (9:16), "landscape" for standard (16:9)
+            ['key' => 'hero_video_orientation', 'value' => 'landscape', 'type' => 'text', 'group' => 'hero', 'label' => 'Hero Video Orientation (landscape or portrait)'],
+
             // Hero collage — 5 images displayed in a mosaic on the right side of the hero
             // Image 1 (large portrait — doctor/clinic) — 800×1000 px portrait (4:5). Shown prominently. Max 400 KB.
             ['key' => 'hero_image_1', 'value' => '', 'type' => 'image', 'group' => 'hero', 'label' => 'Hero Image 1 — Main Portrait (800×1000 px, doctor or clinic)'],

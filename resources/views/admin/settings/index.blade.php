@@ -166,6 +166,79 @@
                             <span class="text-sm" style="color:var(--muted)">Enable</span>
                         </label>
 
+                    {{-- Hero Video Orientation selector --}}
+                    @elseif($setting->key === 'hero_video_orientation')
+                        <div class="flex gap-3">
+                            @foreach(['landscape' => 'Landscape (16:9 — wider)', 'portrait' => 'Portrait (9:16 — tall)'] as $val => $lbl)
+                            <label class="flex items-center gap-2 cursor-pointer px-4 py-2.5 rounded-xl border-2 transition-all text-sm font-semibold"
+                                   style="border-color:{{ old('settings.'.$setting->key,$setting->value) === $val ? 'var(--primary)' : 'var(--border)' }};background:{{ old('settings.'.$setting->key,$setting->value) === $val ? 'var(--primary-light)' : '#fff' }};color:{{ old('settings.'.$setting->key,$setting->value) === $val ? 'var(--primary)' : 'var(--muted)' }}">
+                                <input type="radio" name="settings[{{ $setting->key }}]" value="{{ $val }}"
+                                       {{ old('settings.'.$setting->key,$setting->value) === $val ? 'checked' : '' }}
+                                       class="sr-only">
+                                @if($val === 'landscape')
+                                <svg class="w-5 h-4" viewBox="0 0 20 14" fill="currentColor"><rect rx="2" width="20" height="14"/></svg>
+                                @else
+                                <svg class="w-3 h-5" viewBox="0 0 12 20" fill="currentColor"><rect rx="2" width="12" height="20"/></svg>
+                                @endif
+                                {{ $lbl }}
+                            </label>
+                            @endforeach
+                        </div>
+                        <p class="text-xs mt-1.5" style="color:var(--muted)">Choose based on whether the doctor's video is filmed horizontally or vertically (e.g. a phone recording is usually portrait).</p>
+
+                    {{-- Hero Video URL — special rich field --}}
+                    @elseif($setting->key === 'hero_video')
+                        <div class="space-y-2">
+                            <input type="url"
+                                   name="settings[{{ $setting->key }}]"
+                                   id="setting_{{ $setting->key }}"
+                                   value="{{ old('settings.'.$setting->key, $setting->value) }}"
+                                   placeholder="https://youtu.be/xxxx  or  https://vimeo.com/xxxx"
+                                   class="form-input"
+                                   oninput="updateHeroVideoPreview(this.value)">
+                            <p class="text-xs flex items-start gap-1.5" style="color:var(--muted)">
+                                <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Paste a <strong>YouTube</strong> or <strong>Vimeo</strong> URL. The doctor intro video will appear in the hero section instead of the image mosaic. Leave blank to show the image mosaic.</span>
+                            </p>
+                            {{-- Live preview iframe --}}
+                            <div id="hero-video-preview-wrap"
+                                 class="{{ $setting->value ? '' : 'hidden' }} mt-2 rounded-xl overflow-hidden border"
+                                 style="border-color:var(--border);aspect-ratio:16/9;max-width:420px;background:var(--dark)">
+                                <iframe id="hero-video-preview-frame"
+                                        src="{{ $setting->value ? \App\View\Components\HeroVideoEmbed::embedUrl($setting->value) : '' }}"
+                                        class="w-full h-full"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <script>
+                        function updateHeroVideoPreview(url) {
+                            var wrap  = document.getElementById('hero-video-preview-wrap');
+                            var frame = document.getElementById('hero-video-preview-frame');
+                            var embed = heroVideoEmbedUrl(url);
+                            if (embed) {
+                                frame.src = embed;
+                                wrap.classList.remove('hidden');
+                            } else {
+                                wrap.classList.add('hidden');
+                                frame.src = '';
+                            }
+                        }
+                        function heroVideoEmbedUrl(url) {
+                            if (!url) return '';
+                            // YouTube: youtu.be/ID  or  youtube.com/watch?v=ID  or  youtube.com/shorts/ID
+                            var ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([A-Za-z0-9_-]{11})/);
+                            if (ytMatch) return 'https://www.youtube.com/embed/' + ytMatch[1] + '?rel=0&modestbranding=1';
+                            // Vimeo: vimeo.com/ID
+                            var vmMatch = url.match(/vimeo\.com\/(\d+)/);
+                            if (vmMatch) return 'https://player.vimeo.com/video/' + vmMatch[1] + '?dnt=1';
+                            return '';
+                        }
+                        </script>
+
                     {{-- Text / URL --}}
                     @else
                         <input type="text" name="settings[{{ $setting->key }}]"

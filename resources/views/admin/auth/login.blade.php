@@ -54,6 +54,12 @@
         .password-wrap {
             position: relative;
         }
+        .login-card .input-with-icon {
+            padding-left: 2.75rem;
+        }
+        .login-card .password-input {
+            padding-right: 3.25rem;
+        }
         .password-wrap .field-icon {
             position: absolute;
             left: 0.9rem;
@@ -137,7 +143,7 @@
                 <div class="relative">
                     <input type="email" id="email" name="email"
                            value="{{ old('email') }}"
-                           class="form-input pl-10"
+                              class="form-input input-with-icon"
                            placeholder="admin@aakardermatology.com"
                            required autofocus>
                     <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
@@ -152,7 +158,7 @@
                 <label class="form-label" for="password">Password</label>
                 <div class="password-wrap">
                     <input type="password" id="password" name="password"
-                           class="form-input pl-10 pr-10"
+                              class="form-input input-with-icon password-input"
                            placeholder="••••••••" required>
                     <svg class="field-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
