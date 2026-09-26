@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   AAKAR DERMATOLOGY — Brand System
+    border-radius: 0;
    ───────────────────────────────────────────────────────────────
    PRIMARY   Cobalt Green   #006E61   rgb(0,110,97)
    ACCENT    Mystic Bronze  #CC9134   rgb(204,145,52)
@@ -1257,6 +1257,20 @@ nav[aria-label="Pagination"] a:hover {
 }
 .sr-right.is-visible { opacity:1; transform:translateX(0); }
 
+.doctor-photo-wrap {
+  width: 18rem;
+}
+
+@media (max-width: 1023px) {
+  .sr-left,
+  .sr-right {
+    transform: translateX(0);
+  }
+  .doctor-photo-wrap {
+    width: min(18rem, 100%);
+  }
+}
+
 .sr-pop {
   opacity: 0;
   transform: scale(.8);
@@ -1492,8 +1506,16 @@ a[aria-label="WhatsApp Chat"] {
   gap: 2.5rem;
 }
 
+.hero-inner-pad {
+  width: 100%;
+  padding-inline: 20px;
+}
+
 /* Desktop portrait: copy 58%, card 42% — card is narrow so 9:16 fills height */
 @media (min-width: 1024px) {
+  .hero-inner-pad {
+    padding-inline: 100px;
+  }
   .hv-grid.is-portrait  {
     grid-template-columns: 58fr 42fr;
     gap: 4rem;
@@ -1839,9 +1861,14 @@ a[aria-label="WhatsApp Chat"] {
 
 /* ── Mobile: stack copy above card ── */
 @media (max-width: 1023px) {
+  .hv-media.has-video {
+    width: calc(100% + 40px);
+    margin-inline: -20px;
+  }
   .hv-card.is-portrait {
-    max-width: 280px;
-    margin: 0 auto;
+    max-width: none;
+    width: 100%;
+    margin: 0;
     /* keep 9:16 on mobile */
   }
   .hv-card.is-landscape {
@@ -1849,6 +1876,37 @@ a[aria-label="WhatsApp Chat"] {
   }
   .hv-inline-stats {
     gap: 1.5rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .hv-card {
+    border-radius: 16px;
+    background: var(--dark);
+    box-shadow: 0 16px 48px rgba(0,110,97,.18);
+  }
+  .hv-card::before,
+  .hv-card-glow {
+    display: none;
+  }
+  .hv-inline-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: .75rem;
+  }
+  .hv-inline-stat {
+    min-width: 0;
+  }
+  .hv-inline-stat__value {
+    font-size: clamp(1.25rem, 6vw, 1.75rem);
+  }
+  .hv-inline-stat__label {
+    font-size: .62rem;
+    line-height: 1.35;
+  }
+  .hv-inline-stat__sep {
+    display: none;
   }
 }
 

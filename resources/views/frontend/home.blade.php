@@ -40,13 +40,8 @@
 @endphp
 
 <section class="hero-section overflow-hidden">
-    <div class="w-full py-10 lg:py-14 relative z-10" style="padding-left:20px;padding-right:20px;">
-        <style>
-            @media (min-width: 1024px) {
-                .hero-inner-pad { padding-left: 100px !important; padding-right: 100px !important; }
-            }
-        </style>
-        <div class="hero-inner-pad" style="padding-left:20px;padding-right:20px;">
+    <div class="w-full py-10 lg:py-14 relative z-10">
+        <div class="hero-inner-pad">
 
         {{-- ══ TWO-COLUMN GRID ══
              .hv-grid handles columns purely in CSS — no Tailwind grid override.
@@ -84,7 +79,7 @@
 
                 {{-- Description --}}
                 <p class="mb-8 leading-relaxed hero-copy-enter delay-3"
-                   style="color:var(--muted);font-size:1rem;max-width:480px;line-height:1.75">
+                         style="color:var(--muted);font-size:1rem;line-height:1.75">
                     {{ $settings->get('hero_subheading','Your skin deserves more than quick fixes — it deserves genuine care that understands you. At Aakar Dermatology, we help you achieve healthy, radiant skin.') }}
                 </p>
 
@@ -141,7 +136,7 @@
                  RIGHT — rounded card
                  Shows VIDEO if set, otherwise IMAGE mosaic
             ════════════════════════════════════════ --}}
-            <div class="relative flex items-center
+            <div class="hv-media {{ $heroEmbedUrl ? 'has-video' : '' }} relative flex items-center
                         {{ ($heroEmbedUrl && $isPortrait) ? 'justify-center lg:justify-end lg:items-stretch' : 'justify-center lg:justify-end' }}">
 
                 {{-- Ambient glow behind card --}}
@@ -586,13 +581,13 @@ function heroUnmute() {
 
             {{-- Photo --}}
             <div class="sr-right flex justify-center">
-                <div class="relative">
+                <div class="relative doctor-photo-wrap">
                     @php
                         $drImgSrc = $settings->get('doctor_photo')
                             ? asset('storage/'.$settings->get('doctor_photo'))
                             : ($settings->get('hero_image_1') ? asset('storage/'.$settings->get('hero_image_1')) : ($doctor && $doctor->photo ? $doctor->photo_url : null));
                     @endphp
-                    <div class="w-72 h-80 rounded-3xl overflow-hidden shadow-2xl img-sweep"
+                    <div class="w-full h-80 rounded-3xl overflow-hidden shadow-2xl img-sweep"
                          style="background:linear-gradient(160deg,var(--primary-light),var(--primary))">
                         @if($drImgSrc)
                         <img src="{{ $drImgSrc }}" alt="{{ $doctor->name }}"
