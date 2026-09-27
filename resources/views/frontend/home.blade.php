@@ -40,7 +40,7 @@
 @endphp
 
 <section class="hero-section overflow-hidden">
-    <div class="w-full py-10 lg:py-14 relative z-10">
+    <div class="w-full py-1 lg:py-14 relative z-10">
         <div class="hero-inner-pad">
 
         {{-- ══ TWO-COLUMN GRID ══
