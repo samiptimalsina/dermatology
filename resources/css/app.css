@@ -1861,6 +1861,8 @@ a[aria-label="WhatsApp Chat"] {
 
 /* ── Mobile: stack copy above card ── */
 @media (max-width: 1023px) {
+  .hv-copy    { order: 2; }
+  .hv-media   { order: 1; }
   .hv-media.has-video {
     width: calc(100% + 40px);
     margin-inline: -20px;
