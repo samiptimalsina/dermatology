@@ -37,6 +37,10 @@
                 ['route'=>'admin.before-afters.index', 'match'=>'admin.before-afters.*',      'label'=>'Before/After', 'icon'=>'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
                 ['route'=>'admin.team.index',          'match'=>'admin.team.*',               'label'=>'Team',         'icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
             ],
+            'Administration' => [
+                ['route'=>'admin.users.index', 'match'=>'admin.users.*', 'label'=>'Users', 'icon'=>'M16 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m8-13a4 4 0 11-8 0 4 4 0 018 0zm5 3a4 4 0 010 8m3 2v-2a4 4 0 00-3-3.87'],
+                ['route'=>'admin.roles.index', 'match'=>'admin.roles.*', 'label'=>'Roles & Permissions', 'icon'=>'M12 15l-2 5 2-1 2 1-2-5zm0-13l2.2 4.46 4.92.72-3.56 3.47.84 4.9L12 11.23l-4.4 2.32.84-4.9L4.88 7.18l4.92-.72L12 2z'],
+            ],
             'Settings' => [
                 ['route'=>'admin.seo.index',           'match'=>'admin.seo.*',                'label'=>'SEO',          'icon'=>'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'],
                 ['route'=>'admin.why-choose-us.index', 'match'=>'admin.why-choose-us.*',      'label'=>'Why Us',       'icon'=>'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
@@ -56,6 +60,8 @@
                 'admin.seo.*' => 'manage seo',
                 'admin.why-choose-us.*' => 'manage why-us',
                 'admin.settings.*' => 'manage settings',
+                'admin.users.*' => 'manage users',
+                'admin.roles.*' => 'manage roles',
             ];
             $canNavigate = static fn (array $item): bool => auth()->user()->can($menuPermissions[$item['match']]);
             $navGroups = array_filter(array_map(

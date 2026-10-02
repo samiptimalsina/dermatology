@@ -51,7 +51,12 @@ class AdminRolePermissionTest extends TestCase
         $this->actingAs($blogWriter)
             ->get(route('admin.blogs.index'))
             ->assertOk()
-            ->assertSee(route('admin.settings.index'));
+            ->assertSee(route('admin.settings.index'))
+            ->assertDontSee(route('admin.users.index'))
+            ->assertDontSee(route('admin.roles.index'));
+
+        $this->get(route('admin.users.index'))->assertForbidden();
+        $this->get(route('admin.roles.index'))->assertForbidden();
 
         $this->get(route('admin.settings.index'))->assertOk();
 
@@ -68,5 +73,41 @@ class AdminRolePermissionTest extends TestCase
         $this->actingAs($unassignedUser)
             ->get(route('admin.settings.index'))
             ->assertForbidden();
+    }
+
+    public function test_super_admin_can_manage_users_and_custom_role_permissions(): void
+    {
+        $this->seed(AdminUserSeeder::class);
+
+        $adminUser = User::where('email', 'admin@aakardermatology.com')->firstOrFail();
+        $blogPermission = Permission::findByName('manage blogs', 'web');
+
+        $this->actingAs($adminUser)
+            ->get(route('admin.users.index'))
+            ->assertOk()
+            ->assertSee(route('admin.roles.index'));
+
+        $this->get(route('admin.roles.index'))
+            ->assertOk()
+            ->assertSee('Seeded system role');
+
+        $this->post(route('admin.roles.store'), [
+            'name' => 'content_editor',
+            'permissions' => [$blogPermission->id],
+        ])->assertRedirect(route('admin.roles.index'));
+
+        $customRole = Role::findByName('content_editor', 'web');
+        $this->assertTrue($customRole->hasPermissionTo('manage blogs', 'web'));
+
+        $this->post(route('admin.users.store'), [
+            'name' => 'Content Editor',
+            'email' => 'content.editor@example.com',
+            'password' => 'SecurePassword123',
+            'password_confirmation' => 'SecurePassword123',
+            'roles' => ['content_editor'],
+        ])->assertRedirect(route('admin.users.index'));
+
+        $createdUser = User::where('email', 'content.editor@example.com')->firstOrFail();
+        $this->assertTrue($createdUser->hasRole('content_editor'));
     }
 }
