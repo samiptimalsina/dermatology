@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('canonical_url', $canonicalUrl)
+
 @section('content')
 
 {{-- Page hero --}}
@@ -20,11 +22,11 @@
 {{-- Filter tabs --}}
 <div class="sticky top-20 z-30 bg-white shadow-sm" style="border-bottom:1px solid var(--border)">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-wrap gap-2">
+        <div id="service-filters" class="flex flex-wrap gap-2">
             @foreach(['all'=>'All Services','skin'=>'Skin','hair'=>'Hair','laser'=>'Laser','surgical'=>'Surgical'] as $key => $label)
             <button data-filter="{{ $key }}"
-                    class="px-4 py-2 rounded-full text-sm font-semibold transition-all active-filter-btn"
-                    style="{{ $key === 'all' ? 'background:var(--primary);color:#fff;' : 'background:var(--primary-light);color:var(--primary);' }}">
+                aria-pressed="{{ $key === 'all' ? 'true' : 'false' }}"
+                class="service-filter-btn px-4 py-2 rounded-full text-sm font-semibold transition-all">
                 {{ $label }}
             </button>
             @endforeach
@@ -33,17 +35,17 @@
 </div>
 
 {{-- Services grid --}}
-<section class="py-16 lg:py-20" style="background:var(--bg)">
+<section id="service-list" class="py-16 lg:py-20" style="background:var(--bg)">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @foreach($services as $category => $categoryServices)
-        <div class="mb-14">
+        <div data-category-group="{{ $category }}" class="mb-14">
             <h2 class="text-2xl font-bold mb-8 capitalize pb-3"
                 style="color:var(--dark);border-bottom:2px solid var(--primary-light)">
                 {{ ucfirst($category) }} Treatments
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($categoryServices as $service)
-                <a href="{{ route('services.show', $service) }}"
+                <a href="{{ route('our-services.show', $service) }}/"
                    data-category="{{ $service->category }}"
                    class="service-card block reveal" style="text-decoration:none">
                     @if($service->image)

@@ -22,6 +22,7 @@ class SeoController extends Controller
     public function update(Request $request, SeoMeta $seo)
     {
         $validated = $request->validate([
+            'slug'             => 'required|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:seo_meta,slug,'.$seo->id,
             'meta_title'       => 'required|string|max:200',
             'meta_description' => 'required|string|max:500',
             'content'          => 'nullable|string',

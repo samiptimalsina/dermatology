@@ -34,7 +34,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
+Route::get('/our-services', [ServiceController::class, 'index'])->name('our-services.index');
 Route::get('/services', [ServiceController::class, 'index'])->name('services');
+Route::get('/our-services/{service:slug}', [ServiceController::class, 'show'])->name('our-services.show');
 Route::get('/services/{service:slug}', [ServiceController::class, 'show'])->name('services.show');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');

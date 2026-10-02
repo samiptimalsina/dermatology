@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             SiteSettingSeeder::class,
             SeoMetaSeeder::class,
-            ServiceSeeder::class,
+            ClinicServicesImportSeeder::class,
             TeamMemberSeeder::class,
             WhyChooseUsSeeder::class,
             TestimonialSeeder::class,

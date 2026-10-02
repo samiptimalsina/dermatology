@@ -12,6 +12,7 @@ class SeoMetaSeeder extends Seeder
         $pages = [
             [
                 'page'             => 'home',
+                'slug'             => 'home',
                 'meta_title'       => 'Aakar Dermatology | Skin, Hair & Laser Clinic in Lalitpur, Nepal',
                 'meta_description' => 'Aakar Dermatology offers comprehensive medical & aesthetic dermatology services in Lalitpur, Nepal. Led by Dr. Rajan Tajhya, expert in LASER and Dermato-surgery.',
                 'meta_keywords'    => 'dermatology, skin clinic, hair clinic, laser treatment, Lalitpur, Nepal, Dr. Rajan Tajhya, Aakar Dermatology',
@@ -22,6 +23,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'services',
+                'slug'             => 'services',
                 'meta_title'       => 'Our Dermatology Services | Aakar Dermatology Lalitpur',
                 'meta_description' => 'Explore our complete range of skin, hair & laser treatment services at Aakar Dermatology. From acne treatment to hair transplant, we have personalized solutions for you.',
                 'meta_keywords'    => 'dermatology services, skin treatment, hair transplant, laser treatment, acne treatment, Lalitpur Nepal',
@@ -32,6 +34,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'about',
+                'slug'             => 'about',
                 'meta_title'       => 'About Dr. Rajan Tajhya | Aakar Dermatology Lalitpur',
                 'meta_description' => 'Meet Dr. Rajan Tajhya, Founder of Aakar Dermatology. A decade of expertise in LASER and Dermato-surgery. Providing compassionate, personalized dermatology care in Lalitpur, Nepal.',
                 'meta_keywords'    => 'Dr. Rajan Tajhya, dermatologist, laser specialist, dermato-surgery, Aakar Dermatology, about',
@@ -42,6 +45,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'blog',
+                'slug'             => 'blog',
                 'meta_title'       => 'Skin & Hair Care Blog | Aakar Dermatology',
                 'meta_description' => 'Read expert tips, treatment guides, and skin care advice from Dr. Rajan Tajhya and the Aakar Dermatology team.',
                 'meta_keywords'    => 'skin care tips, hair care, dermatology blog, laser treatment guide, Aakar Dermatology',
@@ -52,6 +56,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'contact',
+                'slug'             => 'contact',
                 'meta_title'       => 'Contact Us | Book Appointment at Aakar Dermatology',
                 'meta_description' => 'Contact Aakar Dermatology in Lalitpur, Nepal. Book your consultation with Dr. Rajan Tajhya today. Call us or fill the appointment form.',
                 'meta_keywords'    => 'contact Aakar Dermatology, book appointment, dermatologist Lalitpur, skin clinic contact',
@@ -62,6 +67,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'videos',
+                'slug'             => 'videos',
                 'meta_title'       => 'Video Tutorials | Aakar Dermatology',
                 'meta_description' => 'Watch practical skin, hair, and treatment tutorials from Aakar Dermatology.',
                 'meta_keywords'    => 'dermatology videos, skin care tutorials, hair care videos, Aakar Dermatology',
@@ -72,6 +78,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'privacy_policy',
+                'slug'             => 'privacy-policy',
                 'meta_title'       => 'Privacy Policy | Aakar Dermatology',
                 'meta_description' => 'Read the Aakar Dermatology privacy policy and learn how we handle personal information.',
                 'canonical_url'    => 'https://aakardermatology.com/privacy-policy',
@@ -82,6 +89,7 @@ class SeoMetaSeeder extends Seeder
             ],
             [
                 'page'             => 'terms_and_conditions',
+                'slug'             => 'terms-and-conditions',
                 'meta_title'       => 'Terms & Conditions | Aakar Dermatology',
                 'meta_description' => 'Read the terms and conditions for using the Aakar Dermatology website and online services.',
                 'canonical_url'    => 'https://aakardermatology.com/terms-and-conditions',

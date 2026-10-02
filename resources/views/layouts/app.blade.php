@@ -37,11 +37,7 @@
     @if($seoOgImage)
     <meta property="og:image" content="{{ asset('storage/'.$seoOgImage) }}">
     @endif
-    @if($seoCanon)
-    <link rel="canonical" href="{{ $seoCanon }}">
-    @else
-    <link rel="canonical" href="{{ url()->current() }}">
-    @endif
+    <link rel="canonical" href="@yield('canonical_url', $seoCanon ?? url()->current())">
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">

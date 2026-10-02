@@ -132,7 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── 5. ANIMATED COUNTER ─────────────────────────────────────
   // Handles [data-count] elements — smooth easing, suffix preserved
-  const easeOut = (t) => 1 - Math.pow(1 - t, 3);   // cubic ease-out
+  const easeInOut = (t) => t < 0.5
+    ? 4 * t * t * t
+    : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const raw    = el.dataset.count;                // e.g. "86+"
       const target = parseInt(raw, 10);
       const suffix = raw.replace(/[0-9]/g, '');
-      const duration = prefersReduced ? 0 : 1400;    // ms
+      const duration = prefersReduced ? 0 : 2600;    // ms
 
       if (prefersReduced) {
         el.textContent = raw;
@@ -154,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!start) start = timestamp;
         const elapsed  = timestamp - start;
         const progress = Math.min(elapsed / duration, 1);
-        const value    = Math.round(easeOut(progress) * target);
+        const value    = Math.round(easeInOut(progress) * target);
         el.textContent = value + suffix;
         if (progress < 1) requestAnimationFrame(step);
       };
@@ -257,21 +259,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ── 12. SERVICE CATEGORY FILTER ─────────────────────────────
-  const filterBtns  = document.querySelectorAll('[data-filter]');
-  const serviceCards = document.querySelectorAll('[data-category]');
-  if (filterBtns.length && serviceCards.length) {
+  const filterBtns = document.querySelectorAll('#service-filters [data-filter]');
+  const categoryGroups = document.querySelectorAll('#service-list [data-category-group]');
+  if (filterBtns.length && categoryGroups.length) {
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active-filter'));
-        btn.classList.add('active-filter');
         const filter = btn.dataset.filter;
-        serviceCards.forEach(card => {
-          const show = filter === 'all' || card.dataset.category === filter;
-          card.style.transition = 'opacity .3s, transform .3s';
-          card.style.opacity   = show ? '1' : '0';
-          card.style.transform = show ? 'scale(1)' : 'scale(.95)';
-          card.style.pointerEvents = show ? '' : 'none';
-          setTimeout(() => { card.style.display = show ? '' : 'none'; }, show ? 0 : 300);
+        filterBtns.forEach(filterBtn => {
+          filterBtn.setAttribute('aria-pressed', filterBtn === btn ? 'true' : 'false');
+        });
+
+        categoryGroups.forEach(group => {
+          let hasVisibleServices = false;
+
+          group.querySelectorAll('[data-category]').forEach(card => {
+            const show = filter === 'all' || card.dataset.category === filter;
+            card.hidden = !show;
+
+            if (show) {
+              hasVisibleServices = true;
+            }
+          });
+
+          group.hidden = !hasVisibleServices;
         });
       });
     });

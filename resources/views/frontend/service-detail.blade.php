@@ -2,6 +2,7 @@
 
 @section('meta_title', $service->meta_title ?? $service->title . ' | Aakar Dermatology')
 @section('meta_description', $service->meta_description ?? $service->short_description)
+@section('canonical_url', $canonicalUrl)
 
 @section('content')
 
@@ -70,7 +71,7 @@
                     <h4 class="font-bold mb-4" style="color:var(--dark)">Related Services</h4>
                     <div class="space-y-3">
                         @foreach($relatedServices as $related)
-                        <a href="{{ route('services.show', $related) }}"
+                        <a href="{{ route('our-services.show', $related) }}/"
                            class="flex items-center gap-3 p-3 rounded-xl transition hover:shadow-md"
                            style="background:var(--primary-light);text-decoration:none">
                             <svg class="w-5 h-5 flex-shrink-0" style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -10,6 +10,11 @@
         @csrf @method('PUT')
         <div class="grid grid-cols-1 gap-5">
             <div>
+                <label class="form-label">Page Slug <span style="color:#EF4444">*</span></label>
+                <input type="text" name="slug" value="{{ old('slug',$seo->slug) }}" class="form-input" maxlength="255" pattern="[a-z0-9]+(-[a-z0-9]+)*" required>
+                <p class="text-xs mt-1" style="color:var(--muted)">Lowercase letters, numbers, and hyphens only.</p>
+            </div>
+            <div>
                 <label class="form-label">Meta Title <span style="color:#EF4444">*</span></label>
                 <input type="text" name="meta_title" value="{{ old('meta_title',$seo->meta_title) }}" class="form-input" maxlength="200" required>
                 <p class="text-xs mt-1" style="color:var(--muted)">Recommended: 50–60 characters</p>

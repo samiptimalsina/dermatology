@@ -16,15 +16,17 @@ class SitemapController extends Controller
 
         // Static pages
         $sitemap->add(Url::create(route('home'))->setPriority(1.0)->setChangeFrequency('weekly'));
-        $sitemap->add(Url::create(route('services'))->setPriority(0.9)->setChangeFrequency('weekly'));
+        $sitemap->add(Url::create(route('our-services.index').'/')->setPriority(0.9)->setChangeFrequency('weekly'));
         $sitemap->add(Url::create(route('about'))->setPriority(0.8)->setChangeFrequency('monthly'));
         $sitemap->add(Url::create(route('blog'))->setPriority(0.8)->setChangeFrequency('daily'));
         $sitemap->add(Url::create(route('contact'))->setPriority(0.7)->setChangeFrequency('monthly'));
 
         // Services
         Service::active()->get()->each(function (Service $service) use ($sitemap) {
+            $serviceUrl = route('our-services.show', $service).'/';
+
             $sitemap->add(
-                Url::create(route('services.show', $service))
+                Url::create($serviceUrl)
                     ->setPriority(0.8)
                     ->setChangeFrequency('monthly')
                     ->setLastModificationDate($service->updated_at)

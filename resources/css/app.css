@@ -515,6 +515,20 @@ h1,h2,h3,h4,h5,h6 {
 .service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: var(--primary); }
 .service-card:hover::before { transform: scaleX(1); }
 
+.service-filter-btn {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid transparent;
+}
+.service-filter-btn[aria-pressed="true"] {
+  background: var(--primary);
+  color: #fff;
+}
+.service-filter-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ────────────────────────────────────
    WHY CHOOSE US
 ──────────────────────────────────── */

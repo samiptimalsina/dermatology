@@ -11,6 +11,7 @@ class SeoMeta extends Model
 
     protected $fillable = [
         'page',
+        'slug',
         'meta_title',
         'meta_description',
         'content',
