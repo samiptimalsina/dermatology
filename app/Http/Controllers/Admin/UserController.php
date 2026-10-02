@@ -4,20 +4,36 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): JsonResponse|View
     {
+        $users = User::query()->with('roles');
+
+        if ($request->ajax() || $request->has('draw')) {
+            return DataTables::eloquent($users)
+                ->addColumn('roles', fn (User $user) => $user->roles
+                    ->map(fn (Role $role) => '<span class="badge badge-blue">'.e(Str::headline($role->name)).'</span>')
+                    ->implode(' '))
+                ->editColumn('created_at', fn (User $user) => e($user->created_at?->format('M d, Y') ?? '—'))
+                ->addColumn('actions', fn (User $user) => view('admin.users.partials.actions', compact('user'))->render())
+                ->rawColumns(['roles', 'actions'])
+                ->toJson();
+        }
+
         return view('admin.users.index', [
-            'users' => User::query()->with('roles')->orderBy('name')->paginate(15),
+            'totalUsers' => User::count(),
             'roles' => Role::query()->where('guard_name', 'web')->orderBy('name')->get(),
         ]);
     }

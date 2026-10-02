@@ -85,7 +85,9 @@ class AdminRolePermissionTest extends TestCase
         $this->actingAs($adminUser)
             ->get(route('admin.users.index'))
             ->assertOk()
-            ->assertSee(route('admin.roles.index'));
+            ->assertSee(route('admin.roles.index'))
+            ->assertSee('users-table')
+            ->assertSee('create-user-button');
 
         $this->get(route('admin.roles.index'))
             ->assertOk()
@@ -109,5 +111,21 @@ class AdminRolePermissionTest extends TestCase
 
         $createdUser = User::where('email', 'content.editor@example.com')->firstOrFail();
         $this->assertTrue($createdUser->hasRole('content_editor'));
+
+        $this->put(route('admin.users.update', $createdUser), [
+            'name' => 'Updated Content Editor',
+            'email' => 'content.editor@example.com',
+            'roles' => ['content_editor'],
+        ])->assertRedirect(route('admin.users.index'));
+
+        $this->getJson(route('admin.users.index', ['draw' => 1, 'start' => 0, 'length' => 15]))
+            ->assertOk()
+            ->assertJsonStructure([
+                'draw',
+                'recordsTotal',
+                'recordsFiltered',
+                'data' => [['name', 'email', 'roles', 'created_at', 'actions']],
+            ])
+            ->assertJsonFragment(['name' => 'Updated Content Editor']);
     }
 }
