@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CustomPage;
 use App\Models\SeoMeta;
+use App\Models\WhyChooseUs;
 use Illuminate\Http\Request;
 
 class SeoController extends Controller
@@ -11,7 +13,9 @@ class SeoController extends Controller
     public function index()
     {
         $pages = SeoMeta::all();
-        return view('admin.seo.index', compact('pages'));
+        $customPages = CustomPage::query()->orderBy('title')->get();
+
+        return view('admin.seo.index', compact('pages', 'customPages'));
     }
 
     public function edit(SeoMeta $seo)
@@ -21,18 +25,20 @@ class SeoController extends Controller
 
     public function update(Request $request, SeoMeta $seo)
     {
+        $request->merge(['slug' => trim((string) $request->input('slug'))]);
+
         $validated = $request->validate([
-            'slug'             => 'required|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:seo_meta,slug,'.$seo->id,
-            'meta_title'       => 'required|string|max:200',
+            'slug' => 'required|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:seo_meta,slug,'.$seo->id,
+            'meta_title' => 'required|string|max:200',
             'meta_description' => 'required|string|max:500',
-            'content'          => 'nullable|string',
-            'menu_label'       => 'nullable|string|max:100',
-            'menu_icon'        => 'nullable|string|max:50',
-            'meta_keywords'    => 'nullable|string|max:300',
-            'og_title'         => 'nullable|string|max:200',
-            'og_description'   => 'nullable|string|max:500',
-            'canonical_url'    => 'nullable|url|max:300',
-            'no_index'         => 'boolean',
+            'content' => 'nullable|string',
+            'menu_label' => 'nullable|string|max:100',
+            'menu_icon' => 'nullable|string|max:50',
+            'meta_keywords' => 'nullable|string|max:300',
+            'og_title' => 'nullable|string|max:200',
+            'og_description' => 'nullable|string|max:500',
+            'canonical_url' => 'nullable|url|max:300',
+            'no_index' => 'boolean',
         ]);
 
         if ($request->hasFile('og_image')) {
@@ -43,43 +49,47 @@ class SeoController extends Controller
         SeoMeta::clearCache($seo->page);
 
         return redirect()->route('admin.seo.index')
-            ->with('success', 'SEO settings updated for ' . ucfirst($seo->page) . ' page.');
+            ->with('success', 'SEO settings updated for '.ucfirst($seo->page).' page.');
     }
 
     public function whyChooseUs()
     {
-        $items = \App\Models\WhyChooseUs::ordered()->get();
+        $items = WhyChooseUs::ordered()->get();
+
         return view('admin.why-choose-us.index', compact('items'));
     }
 
     public function storeWhyChooseUs(Request $request)
     {
         $validated = $request->validate([
-            'title'       => 'required|string|max:200',
+            'title' => 'required|string|max:200',
             'description' => 'required|string|max:500',
-            'icon'        => 'nullable|string|max:50',
-            'sort_order'  => 'integer|min:0',
+            'icon' => 'nullable|string|max:50',
+            'sort_order' => 'integer|min:0',
         ]);
-        \App\Models\WhyChooseUs::create($validated);
+        WhyChooseUs::create($validated);
+
         return redirect()->route('admin.why-choose-us.index')->with('success', 'Item created.');
     }
 
-    public function updateWhyChooseUs(Request $request, \App\Models\WhyChooseUs $item)
+    public function updateWhyChooseUs(Request $request, WhyChooseUs $item)
     {
         $validated = $request->validate([
-            'title'       => 'required|string|max:200',
+            'title' => 'required|string|max:200',
             'description' => 'required|string|max:500',
-            'icon'        => 'nullable|string|max:50',
-            'is_active'   => 'boolean',
-            'sort_order'  => 'integer|min:0',
+            'icon' => 'nullable|string|max:50',
+            'is_active' => 'boolean',
+            'sort_order' => 'integer|min:0',
         ]);
         $item->update($validated);
+
         return redirect()->route('admin.why-choose-us.index')->with('success', 'Item updated.');
     }
 
-    public function destroyWhyChooseUs(\App\Models\WhyChooseUs $item)
+    public function destroyWhyChooseUs(WhyChooseUs $item)
     {
         $item->delete();
+
         return redirect()->route('admin.why-choose-us.index')->with('success', 'Item deleted.');
     }
 }

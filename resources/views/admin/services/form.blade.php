@@ -3,7 +3,7 @@
 @section('content')
 @php($serviceImageInputId = 'service-image-input-' . \Illuminate\Support\Str::uuid())
 
-<div class="w-full max-w-6xl mx-auto">
+<div class="w-full">
     <a href="{{ route('admin.services.index') }}" class="text-sm mb-5 inline-flex items-center gap-1" style="color:var(--muted);text-decoration:none">
         ← Back to Services
     </a>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\CustomPage;
 use App\Models\Service;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
@@ -40,6 +41,15 @@ class SitemapController extends Controller
                     ->setPriority(0.7)
                     ->setChangeFrequency('monthly')
                     ->setLastModificationDate($blog->updated_at)
+            );
+        });
+
+        CustomPage::query()->where('is_published', true)->where('no_index', false)->get()->each(function (CustomPage $customPage) use ($sitemap) {
+            $sitemap->add(
+                Url::create(route('custom-pages.show', $customPage))
+                    ->setPriority(0.6)
+                    ->setChangeFrequency('monthly')
+                    ->setLastModificationDate($customPage->updated_at)
             );
         });
 

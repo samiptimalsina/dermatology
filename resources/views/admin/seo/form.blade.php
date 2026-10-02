@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title','Edit SEO – '.ucfirst($seo->page))
 @section('content')
-<div class="w-full max-w-5xl mx-auto">
+<div class="w-full">
     <a href="{{ route('admin.seo.index') }}" class="text-sm mb-5 inline-flex items-center gap-1" style="color:var(--muted);text-decoration:none">← Back to SEO</a>
     @if($errors->any())<div class="alert-error mb-5"><ul class="list-disc list-inside">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul></div>@endif
 
@@ -11,7 +11,7 @@
         <div class="grid grid-cols-1 gap-5">
             <div>
                 <label class="form-label">Page Slug <span style="color:#EF4444">*</span></label>
-                <input type="text" name="slug" value="{{ old('slug',$seo->slug) }}" class="form-input" maxlength="255" pattern="[a-z0-9]+(-[a-z0-9]+)*" required>
+                <input type="text" name="slug" value="{{ old('slug',$seo->slug) }}" class="form-input" maxlength="255" pattern="[a-z0-9]+(-[a-z0-9]+)*" onblur="this.value = this.value.trim()" required>
                 <p class="text-xs mt-1" style="color:var(--muted)">Lowercase letters, numbers, and hyphens only.</p>
             </div>
             <div>

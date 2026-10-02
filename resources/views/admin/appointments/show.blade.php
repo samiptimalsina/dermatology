@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title','Appointment Details')
 @section('content')
-<div class="w-full max-w-5xl mx-auto">
+<div class="w-full">
     <a href="{{ route('admin.appointments.index') }}" class="text-sm mb-5 inline-flex items-center gap-1" style="color:var(--muted);text-decoration:none">← Back</a>
 
     <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">

@@ -10,6 +10,8 @@ use Tests\TestCase;
 
 class SeoMetaSlugTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_seo_slug_can_be_updated_in_admin(): void
     {
         $seo = $this->seoRecord('about');
@@ -47,6 +49,20 @@ class SeoMetaSlugTest extends TestCase
             'meta_title' => 'About the clinic',
             'meta_description' => 'Learn about the clinic.',
         ])->assertSessionHasErrors('slug');
+    }
+
+    public function test_seo_slug_trims_surrounding_whitespace_before_saving(): void
+    {
+        $seo = $this->seoRecord('about');
+        $this->actingAs($this->seoManager());
+
+        $this->put(route('admin.seo.update', $seo), [
+            'slug' => '  about-the-clinic  ',
+            'meta_title' => 'About the clinic',
+            'meta_description' => 'Learn about the clinic.',
+        ])->assertRedirect(route('admin.seo.index'));
+
+        $this->assertSame('about-the-clinic', $seo->refresh()->slug);
     }
 
     private function seoRecord(string $page): SeoMeta

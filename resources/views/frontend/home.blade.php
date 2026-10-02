@@ -294,7 +294,7 @@
     <a href="#about-section"
        class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 hero-copy-enter delay-4"
        style="color:var(--primary);opacity:0.65">
-        <span class="text-xs tracking-widest uppercase">Scroll</span>
+        <!-- <span class="text-xs tracking-widest uppercase">Scroll</span> -->
         <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>

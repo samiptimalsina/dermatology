@@ -259,29 +259,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ── 12. SERVICE CATEGORY FILTER ─────────────────────────────
-  const filterBtns = document.querySelectorAll('#service-filters [data-filter]');
-  const categoryGroups = document.querySelectorAll('#service-list [data-category-group]');
-  if (filterBtns.length && categoryGroups.length) {
+  const filterBtns  = document.querySelectorAll('[data-filter]');
+  const serviceCards = document.querySelectorAll('[data-category]');
+  if (filterBtns.length && serviceCards.length) {
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active-filter'));
+        btn.classList.add('active-filter');
         const filter = btn.dataset.filter;
-        filterBtns.forEach(filterBtn => {
-          filterBtn.setAttribute('aria-pressed', filterBtn === btn ? 'true' : 'false');
-        });
-
-        categoryGroups.forEach(group => {
-          let hasVisibleServices = false;
-
-          group.querySelectorAll('[data-category]').forEach(card => {
-            const show = filter === 'all' || card.dataset.category === filter;
-            card.hidden = !show;
-
-            if (show) {
-              hasVisibleServices = true;
-            }
-          });
-
-          group.hidden = !hasVisibleServices;
+        serviceCards.forEach(card => {
+          const show = filter === 'all' || card.dataset.category === filter;
+          card.style.transition = 'opacity .3s, transform .3s';
+          card.style.opacity   = show ? '1' : '0';
+          card.style.transform = show ? 'scale(1)' : 'scale(.95)';
+          card.style.pointerEvents = show ? '' : 'none';
+          setTimeout(() => { card.style.display = show ? '' : 'none'; }, show ? 0 : 300);
         });
       });
     });

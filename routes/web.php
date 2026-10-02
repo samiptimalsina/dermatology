@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BeforeAfterController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\CustomPageController as AdminCustomPageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\RoleController;
@@ -173,6 +174,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/seo', [SeoController::class, 'index'])->name('seo.index');
             Route::get('/seo/{seo}/edit', [SeoController::class, 'edit'])->name('seo.edit');
             Route::put('/seo/{seo}', [SeoController::class, 'update'])->name('seo.update');
+            Route::get('/seo/custom-pages/create', [AdminCustomPageController::class, 'create'])->name('seo.custom-pages.create');
+            Route::post('/seo/custom-pages', [AdminCustomPageController::class, 'store'])->name('seo.custom-pages.store');
+            Route::get('/seo/custom-pages/{customPage}/edit', [AdminCustomPageController::class, 'edit'])->name('seo.custom-pages.edit');
+            Route::put('/seo/custom-pages/{customPage}', [AdminCustomPageController::class, 'update'])->name('seo.custom-pages.update');
+            Route::delete('/seo/custom-pages/{customPage}', [AdminCustomPageController::class, 'destroy'])->name('seo.custom-pages.destroy');
         });
 
         // Why Choose Us
@@ -204,3 +210,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
     });
 });
+
+Route::get('/{customPage:slug}', [PageController::class, 'showCustom'])->name('custom-pages.show');

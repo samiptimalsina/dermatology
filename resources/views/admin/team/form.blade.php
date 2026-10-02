@@ -2,7 +2,7 @@
 @section('title', $member->exists ? 'Edit Team Member' : 'Add Team Member')
 @section('content')
 @php($teamPhotoInputId = 'team-photo-input-' . \Illuminate\Support\Str::uuid())
-<div class="w-full max-w-5xl mx-auto">
+<div class="w-full">
     <a href="{{ route('admin.team.index') }}" class="text-sm mb-5 inline-flex items-center gap-1" style="color:var(--muted);text-decoration:none">← Back</a>
     @if($errors->any())<div class="alert-error mb-5"><ul class="list-disc list-inside">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul></div>@endif
 
