@@ -43,6 +43,25 @@
                 ['route'=>'admin.settings.index',      'match'=>'admin.settings.*',           'label'=>'Settings',     'icon'=>'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
             ],
         ];
+            $menuPermissions = [
+                'admin.dashboard' => 'view dashboard',
+                'admin.appointments.*' => 'manage appointments',
+                'admin.services.*' => 'manage services',
+                'admin.blogs.*' => 'manage blogs',
+                'admin.videos.*' => 'manage videos',
+                'admin.gallery.*' => 'manage gallery',
+                'admin.testimonials.*' => 'manage testimonials',
+                'admin.before-afters.*' => 'manage before-afters',
+                'admin.team.*' => 'manage team',
+                'admin.seo.*' => 'manage seo',
+                'admin.why-choose-us.*' => 'manage why-us',
+                'admin.settings.*' => 'manage settings',
+            ];
+            $canNavigate = static fn (array $item): bool => auth()->user()->can($menuPermissions[$item['match']]);
+            $navGroups = array_filter(array_map(
+                static fn (array $items): array => array_values(array_filter($items, $canNavigate)),
+                $navGroups
+            ));
 
         // Bottom 5 tabs (most-used)
         $bottomTabs = [
@@ -52,6 +71,7 @@
             ['route'=>'admin.blogs.index',        'match'=>'admin.blogs.*',        'label'=>'Blogs',     'icon'=>'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'],
             ['route'=>'admin.settings.index',     'match'=>'admin.settings.*',     'label'=>'Settings',  'icon'=>'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
         ];
+        $bottomTabs = array_values(array_filter($bottomTabs, $canNavigate));
     @endphp
 
     <style>
