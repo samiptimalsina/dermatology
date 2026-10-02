@@ -70,10 +70,10 @@
 
             <fieldset>
                 <legend class="form-label">Roles</legend>
-                <div class="flex flex-wrap gap-x-5 gap-y-2">
+                <div class="flex flex-wrap gap-2">
                     @foreach($roles as $role)
-                    <label class="inline-flex items-center gap-2 text-sm" style="color:var(--text)">
-                        <input type="checkbox" name="roles[]" value="{{ $role->name }}" data-user-role @checked(in_array($role->name, old('roles', []), true))>
+                    <label class="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors hover:bg-[#F2FBFA] has-[:checked]:border-primary has-[:checked]:bg-[#E8F7F5]" style="border-color:var(--border);color:var(--text)">
+                        <input type="checkbox" class="accent-primary focus-visible:ring-2 focus-visible:ring-primary" name="roles[]" value="{{ $role->name }}" data-user-role @checked(in_array($role->name, old('roles', []), true))>
                         {{ \Illuminate\Support\Str::headline($role->name) }}
                     </label>
                     @endforeach
