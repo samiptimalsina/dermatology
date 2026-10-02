@@ -25,7 +25,7 @@
         </div>
         <div>
             <label class="form-label">Page Content <span style="color:#EF4444">*</span></label>
-            <textarea name="content" rows="12" class="form-input rich-editor resize-y" required>{{ old('content', $customPage->content) }}</textarea>
+            <textarea name="content" rows="12" class="form-input rich-editor resize-y">{{ old('content', $customPage->content) }}</textarea>
         </div>
         <div>
             <label class="form-label">Meta Title</label>
