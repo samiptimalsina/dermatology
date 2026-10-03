@@ -110,6 +110,11 @@
                             <p class="text-sm" style="color:var(--muted)">No logos uploaded yet.</p>
                             @endforelse
                         </div>
+                        @elseif($setting->key === 'contact_map_image')
+                        <div class="mb-3 max-w-xl overflow-hidden rounded-xl border" style="border-color:var(--border)">
+                            <img src="{{ $setting->value ? asset('storage/'.$setting->value) : asset('images/contact-map.svg') }}"
+                                 alt="Clinic map preview" class="block w-full h-auto">
+                        </div>
                         @elseif($setting->value)
                         <div class="mb-2">
                             <img src="{{ asset('storage/'.$setting->value) }}" alt="{{ $setting->label }}"
@@ -119,6 +124,8 @@
                            @if($setting->key === 'site_logo')
                            <input type="file" name="images[site_logos][]" id="setting_site_logos" class="form-input" accept="image/*" multiple>
                            <p class="text-xs mt-1.5" style="color:var(--muted)">Choose one or more logo images. The first uploaded logo is used in the header and footer.</p>
+                           @elseif($setting->key === 'contact_map_image')
+                           <input type="file" name="images[contact_map_image]" id="setting_contact_map_image" class="form-input" accept="image/jpeg,image/png,image/webp">
                            @else
                            <input type="file" name="images[{{ $setting->key }}]" id="setting_{{ $setting->key }}" class="form-input" accept="image/*">
                            @endif
@@ -136,6 +143,7 @@
                                 'hero_image_5' => '800×600 px landscape (4:3). Hero collage top cell. Max 300 KB.',
                                 'doctor_photo' => '800×1000 px portrait (4:5). Shown in hero & about sections. Max 400 KB.',
                                 'og_image'     => '1200×630 px (1.91:1). Used when sharing on Facebook/Twitter.',
+                                'contact_map_image' => 'Upload the clinic directions map. JPG, PNG, or WEBP; maximum 5 MB.',
                             ];
                             $hint = $imgHints[$setting->key] ?? null;
                         @endphp

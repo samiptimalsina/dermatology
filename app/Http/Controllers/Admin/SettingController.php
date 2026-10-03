@@ -11,16 +11,18 @@ class SettingController extends Controller
 {
     public function index()
     {
-        $groups   = ['brand', 'general', 'hero', 'stats', 'contact', 'social', 'about', 'cta'];
+        $groups = ['brand', 'general', 'hero', 'stats', 'contact', 'social', 'about', 'cta'];
         $settings = SiteSetting::all()->groupBy('group');
+
         return view('admin.settings.index', compact('settings', 'groups'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'settings'   => 'required|array',
+            'settings' => 'required|array',
             'settings.*' => 'nullable|string',
+            'images.contact_map_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         foreach ($request->input('settings', []) as $key => $value) {
@@ -43,7 +45,8 @@ class SettingController extends Controller
             if ($key === 'site_logos') {
                 continue;
             }
-            $path = $file->store('settings', 'public');
+            $directory = $key === 'contact_map_image' ? 'settings/contact-map' : 'settings';
+            $path = $file->store($directory, 'public');
             SiteSetting::where('key', $key)->update(['value' => $path]);
             Cache::forget("setting_{$key}");
         }

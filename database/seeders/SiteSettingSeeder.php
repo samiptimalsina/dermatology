@@ -32,13 +32,13 @@ class SiteSettingSeeder extends Seeder
             ['key' => 'show_footer_logo', 'value' => '1', 'type' => 'boolean', 'group' => 'general', 'label' => 'Show Footer Logo'],
             // Favicon — 512×512 px square PNG. Displays in browser tab.
             ['key' => 'site_favicon',     'value' => '',  'type' => 'image', 'group' => 'general', 'label' => 'Favicon (512×512 px square PNG)'],
-            ['key' => 'footer_text',      'value' => '© ' . date('Y') . ' Aakar Dermatology. All rights reserved.', 'type' => 'text', 'group' => 'general', 'label' => 'Footer Text'],
+            ['key' => 'footer_text',      'value' => '© '.date('Y').' Aakar Dermatology. All rights reserved.', 'type' => 'text', 'group' => 'general', 'label' => 'Footer Text'],
 
             // ── Hero Section ─────────────────────────────────────────────────────
             ['key' => 'hero_heading',      'value' => 'Nurturing Skin,<br>Carving Confidence', 'type' => 'text',     'group' => 'hero', 'label' => 'Hero Heading'],
             ['key' => 'hero_subheading',   'value' => 'Your skin deserves more than quick fixes—it deserves genuine care that understands you. At Aakar Dermatology, we help you achieve healthy, radiant skin that boosts your confidence every single day.', 'type' => 'textarea', 'group' => 'hero', 'label' => 'Hero Subheading'],
             ['key' => 'hero_btn_primary',  'value' => 'Book Appointment', 'type' => 'text', 'group' => 'hero', 'label' => 'Hero Primary Button Label'],
-            ['key' => 'hero_btn_secondary','value' => 'Our Services',     'type' => 'text', 'group' => 'hero', 'label' => 'Hero Secondary Button Label'],
+            ['key' => 'hero_btn_secondary', 'value' => 'Our Services',     'type' => 'text', 'group' => 'hero', 'label' => 'Hero Secondary Button Label'],
 
             // Hero video — paste a YouTube or Vimeo URL (e.g. https://youtu.be/xxx or https://vimeo.com/xxx)
             // The front-end auto-converts it to an embed URL and renders an inline player.
@@ -82,6 +82,7 @@ class SiteSettingSeeder extends Seeder
             ['key' => 'contact_address',   'value' => 'Lalitpur Metropolitan City, Lalitpur, Nepal', 'type' => 'textarea', 'group' => 'contact', 'label' => 'Address'],
             ['key' => 'contact_hours',     'value' => 'Sun–Fri: 9:00 AM – 6:00 PM | Sat: Closed',   'type' => 'text',     'group' => 'contact', 'label' => 'Office Hours'],
             ['key' => 'google_maps_embed', 'value' => 'https://maps.google.com/maps?q=Lalitpur,Nepal&output=embed', 'type' => 'textarea', 'group' => 'contact', 'label' => 'Google Maps Embed URL'],
+            ['key' => 'contact_map_image', 'value' => '', 'type' => 'image', 'group' => 'contact', 'label' => 'Clinic Map Image'],
 
             // ── Social ───────────────────────────────────────────────────────────
             ['key' => 'social_facebook',  'value' => 'https://facebook.com/aakardermatology',  'type' => 'text', 'group' => 'social', 'label' => 'Facebook URL'],
@@ -97,6 +98,12 @@ class SiteSettingSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
+            if ($setting['key'] === 'contact_map_image') {
+                SiteSetting::firstOrCreate(['key' => $setting['key']], $setting);
+
+                continue;
+            }
+
             SiteSetting::updateOrCreate(['key' => $setting['key']], $setting);
         }
     }

@@ -76,4 +76,28 @@ class LaserHairReductionPageTest extends TestCase
             ->assertSee(route('our-services.show', 'laser-hair-reduction'), false)
             ->assertDontSee(route('services.show', 'laser-hair-removal'), false);
     }
+
+    public function test_sitemap_index_and_public_pages_are_included_for_seo(): void
+    {
+        $this->seed(ClinicServicesImportSeeder::class);
+        $this->seed(BlogSeeder::class);
+
+        $this->get('/sitemap_index.xml')
+            ->assertOk()
+            ->assertSee('/sitemap.xml', false);
+
+        $this->get('/sitemap.xml')
+            ->assertOk()
+            ->assertSee(route('home'), false)
+            ->assertSee(route('about'), false)
+            ->assertSee(route('gallery'), false)
+            ->assertSee(route('videos'), false)
+            ->assertSee(route('contact'), false)
+            ->assertSee(route('privacy-policy'), false)
+            ->assertSee(route('terms-and-conditions'), false)
+            ->assertSee(route('our-services.index').'/', false)
+            ->assertSee(route('blog'), false)
+            ->assertSee(route('our-services.show', 'laser-hair-reduction'), false)
+            ->assertSee(route('blog.show', 'laser-hair-reduction-guide'), false);
+    }
 }
