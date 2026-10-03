@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $contactMapImage = $settings->get('contact_map_image');
+    $contactMapImageUrl = $contactMapImage
+        ? asset('storage/'.$contactMapImage)
+        : asset('images/contact-map.svg');
+    $googleMapsEmbed = $settings->get('google_maps_embed');
+@endphp
 
 <section class="py-16" style="background:linear-gradient(135deg,#F7F3EC,#F0FAF8)">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,16 +151,24 @@
             </div>
         </div>
 
-        {{-- Map --}}
-        @if($settings->get('google_maps_embed'))
-        <div class="mt-12 rounded-2xl overflow-hidden shadow-lg" style="height:380px">
-            <iframe src="{{ $settings->get('google_maps_embed') }}"
-                    width="100%" height="100%" frameborder="0"
-                    style="border:0" allowfullscreen loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    title="Aakar Dermatology Location"></iframe>
+        {{-- Clinic map --}}
+        <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+            <figure class="overflow-hidden rounded-2xl shadow-lg" style="border:1px solid var(--border)">
+                <img src="{{ $contactMapImageUrl }}"
+                     alt="Aakar Dermatology location map"
+                     class="block w-full h-auto"
+                     loading="lazy">
+            </figure>
+            @if($googleMapsEmbed)
+            <div class="overflow-hidden rounded-2xl shadow-lg" style="height:380px;border:1px solid var(--border)">
+                <iframe src="{{ $googleMapsEmbed }}"
+                        width="100%" height="100%" frameborder="0"
+                        style="border:0" allowfullscreen loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Interactive Aakar Dermatology location map"></iframe>
+            </div>
+            @endif
         </div>
-        @endif
     </div>
 </section>
 

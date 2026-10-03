@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\CustomPage;
 use App\Models\Service;
+use App\Models\Video;
 use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\SitemapIndex;
 use Spatie\Sitemap\Tags\Url;
 
 class SitemapController extends Controller
@@ -14,45 +16,66 @@ class SitemapController extends Controller
     public function index()
     {
         $sitemap = Sitemap::create();
+        $seenUrls = [];
+
+        $addUrl = function (string $url, float $priority, string $changeFrequency, ?\DateTimeInterface $lastModified = null) use (&$seenUrls, $sitemap) {
+            $normalized = rtrim($url, '/');
+            if ($normalized === '' || in_array($normalized, $seenUrls, true)) {
+                return;
+            }
+
+            $seenUrls[] = $normalized;
+
+            $tag = Url::create($url)
+                ->setPriority($priority)
+                ->setChangeFrequency($changeFrequency);
+
+            if ($lastModified) {
+                $tag->setLastModificationDate($lastModified);
+            }
+
+            $sitemap->add($tag);
+        };
 
         // Static pages
-        $sitemap->add(Url::create(route('home'))->setPriority(1.0)->setChangeFrequency('weekly'));
-        $sitemap->add(Url::create(route('our-services.index').'/')->setPriority(0.9)->setChangeFrequency('weekly'));
-        $sitemap->add(Url::create(route('about'))->setPriority(0.8)->setChangeFrequency('monthly'));
-        $sitemap->add(Url::create(route('blog'))->setPriority(0.8)->setChangeFrequency('daily'));
-        $sitemap->add(Url::create(route('contact'))->setPriority(0.7)->setChangeFrequency('monthly'));
+        $addUrl(route('home'), 1.0, 'weekly');
+        $addUrl(route('about'), 0.8, 'monthly');
+        $addUrl(route('our-services.index').'/', 0.9, 'weekly');
+        $addUrl(route('blog'), 0.8, 'daily');
+        $addUrl(route('gallery'), 0.7, 'monthly');
+        $addUrl(route('videos'), 0.7, 'weekly');
+        $addUrl(route('contact'), 0.7, 'monthly');
+        $addUrl(route('privacy-policy'), 0.5, 'yearly');
+        $addUrl(route('terms-and-conditions'), 0.5, 'yearly');
 
-        // Services
-        Service::active()->get()->each(function (Service $service) use ($sitemap) {
-            $serviceUrl = route('our-services.show', $service).'/';
-
-            $sitemap->add(
-                Url::create($serviceUrl)
-                    ->setPriority(0.8)
-                    ->setChangeFrequency('monthly')
-                    ->setLastModificationDate($service->updated_at)
-            );
+        Service::active()->ordered()->get()->each(function (Service $service) use ($addUrl) {
+            $addUrl(route('our-services.show', $service).'/', 0.8, 'monthly', $service->updated_at);
         });
 
-        // Blogs
-        Blog::published()->get()->each(function (Blog $blog) use ($sitemap) {
-            $sitemap->add(
-                Url::create(route('blog.show', $blog))
-                    ->setPriority(0.7)
-                    ->setChangeFrequency('monthly')
-                    ->setLastModificationDate($blog->updated_at)
-            );
+        Blog::published()->latest()->get()->each(function (Blog $blog) use ($addUrl) {
+            $addUrl(route('blog.show', $blog), 0.7, 'monthly', $blog->updated_at);
         });
 
-        CustomPage::query()->where('is_published', true)->where('no_index', false)->get()->each(function (CustomPage $customPage) use ($sitemap) {
-            $sitemap->add(
-                Url::create(route('custom-pages.show', $customPage))
-                    ->setPriority(0.6)
-                    ->setChangeFrequency('monthly')
-                    ->setLastModificationDate($customPage->updated_at)
-            );
+        Video::active()->ordered()->get()->each(function (Video $video) use ($addUrl) {
+            $addUrl(route('videos.show', $video), 0.6, 'monthly', $video->updated_at);
         });
+
+        CustomPage::query()
+            ->where('is_published', true)
+            ->where('no_index', false)
+            ->get()
+            ->each(function (CustomPage $customPage) use ($addUrl) {
+                $addUrl(route('custom-pages.show', $customPage), 0.6, 'monthly', $customPage->updated_at);
+            });
 
         return $sitemap->toResponse(request());
+    }
+
+    public function indexPage()
+    {
+        $sitemapIndex = SitemapIndex::create();
+        $sitemapIndex->add(route('sitemap'));
+
+        return $sitemapIndex->toResponse(request());
     }
 }

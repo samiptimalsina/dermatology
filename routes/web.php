@@ -56,8 +56,9 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 // SEO helpers
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/sitemap_index.xml', [SitemapController::class, 'indexPage'])->name('sitemap.index');
 Route::get('/robots.txt', function () {
-    $content = "User-agent: *\nAllow: /\nSitemap: ".route('sitemap');
+    $content = "User-agent: *\nAllow: /\nSitemap: ".route('sitemap.index');
 
     return response($content, 200)->header('Content-Type', 'text/plain');
 })->name('robots');

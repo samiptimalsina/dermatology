@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1166 560" role="img" aria-labelledby="title description">
+  <title id="title">Aakar Dermatology directions map</title>
+  <desc id="description">Clinic directions at Pulchowk Damkal Chowk, near Jawalakhel and Sumeru Hospital.</desc>
+  <rect width="1166" height="560" rx="24" fill="#fff"/>
+  <g fill="none" stroke="#d4d8cf" stroke-width="3">
+    <path d="M0 312H1166M0 410H1166M313 0V560M400 0V560M848 0V560M935 0V560"/>
+  </g>
+  <g fill="none" stroke="#efffae" stroke-width="94">
+    <path d="M0 361H1166M356 0V560M891 0V560"/>
+  </g>
+  <g fill="#fff">
+    <rect x="18" y="24" width="265" height="264" rx="14"/>
+    <rect x="420" y="22" width="408" height="264" rx="14"/>
+    <rect x="953" y="18" width="195" height="268" rx="14"/>
+    <rect x="18" y="430" width="265" height="112" rx="14"/>
+    <rect x="420" y="430" width="408" height="112" rx="14"/>
+    <rect x="953" y="430" width="195" height="112" rx="14"/>
+  </g>
+  <g fill="#111" font-family="Arial, sans-serif" font-size="24" font-weight="700">
+    <text x="28" y="368">Ekantakuna</text>
+    <text x="858" y="368">Pulchowk</text>
+    <text x="459" y="103" font-size="22" font-weight="400">Jawalakhel</text>
+    <text x="550" y="247">Pulchowk</text>
+    <text x="566" y="276">Damkal</text>
+    <text x="169" y="491" font-size="22" font-weight="400">Kumaripati</text>
+    <text x="570" y="503" font-size="22">Alka</text>
+    <text x="544" y="531" font-size="22">Hospital</text>
+    <text x="953" y="32" font-size="20">Sumeru</text>
+    <text x="953" y="58" font-size="20">Hospital</text>
+  </g>
+  <g fill="#111">
+    <path d="M201 346h47l-19-15 7-8 31 27-31 27-7-8 19-15h-47z"/>
+    <path d="M1005 346h47l-19-15 7-8 31 27-31 27-7-8 19-15h-47z"/>
+    <path d="M351 421h10v44l14-17 8 7-27 32-27-32 8-7 14 17z"/>
+    <circle cx="356" cy="361" r="39"/>
+    <rect x="680" y="258" width="68" height="54"/>
+    <rect x="568" y="411" width="68" height="55"/>
+    <rect x="954" y="74" width="62" height="56"/>
+  </g>
+  <rect x="774" y="188" width="76" height="74" fill="#c68b2e" stroke="#111" stroke-width="3"/>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <path d="M719 134l19-51 19 51M759 134l23-42 24 42" fill="none" stroke="#08776b" stroke-width="8"/>
+    <path d="M776 134l29-50 27 50" fill="none" stroke="#c68b2e" stroke-width="8"/>
+    <rect x="700" y="141" width="119" height="24" fill="#08776b"/>
+    <text x="759" y="158" fill="#fff" font-size="13" letter-spacing="3">AAKAR</text>
+    <text x="759" y="176" fill="#9b6b1f" font-size="9" letter-spacing="2">DERMATOLOGY</text>
+  </g>
+  <path d="M586 410c17-60 92-77 163-71 73 6 126-6 149-49 16-30 8-52-17-66" fill="none" stroke="#111" stroke-width="4" stroke-dasharray="12 9"/>
+  <path d="M865 219l-19 11 23 12-2-23z" fill="#111"/>
+  <text x="615" y="385" fill="#111" font-family="Arial, sans-serif" font-size="22" font-weight="700">Just 1 min walk!</text>
+</svg>
