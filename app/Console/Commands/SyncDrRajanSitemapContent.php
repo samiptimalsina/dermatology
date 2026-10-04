@@ -37,7 +37,7 @@ class SyncDrRajanSitemapContent extends Command
             $url = $entry['url'];
             $path = parse_url($url, PHP_URL_PATH) ?: '/';
 
-            if ($entry['type'] === 'service' || str_contains($path, '/our-services/')) {
+            if ($entry['type'] === 'service' || ($entry['type'] === null && str_contains($path, '/our-services/'))) {
                 $this->syncService($url, $dryRun);
 
                 continue;

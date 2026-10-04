@@ -84,6 +84,9 @@ XML
     <url>
         <loc>https://drrajanskinclinic.com/?attachment_id=25</loc>
     </url>
+    <url>
+        <loc>https://drrajanskinclinic.com/our-services/laser-hair-reduction/laser-hair-reduction-1/</loc>
+    </url>
 </urlset>
 XML
             ),
@@ -168,6 +171,11 @@ HTML,
                 200,
                 ['Content-Type' => 'text/html']
             ),
+            'https://drrajanskinclinic.com/our-services/laser-hair-reduction/laser-hair-reduction-1*' => Http::response(
+                '<html><body><main><img src="https://drrajanskinclinic.com/wp-content/uploads/2024/01/attachment-extra.jpg" alt="Attachment" /></main></body></html>',
+                200,
+                ['Content-Type' => 'text/html']
+            ),
             'https://drrajanskinclinic.com/team/member-1*' => Http::response(
                 '<html><head><title>Member 1</title></head><body><main><h1>Member 1</h1><p>Post 1</p><img src="https://drrajanskinclinic.com/wp-content/uploads/2024/01/member.jpg" alt="Member 1" /></main></body></html>',
                 200,
@@ -178,17 +186,19 @@ HTML,
             'https://drrajanskinclinic.com/wp-content/uploads/2024/01/service-thumb.jpg' => Http::response('service-image-content', 200, ['Content-Type' => 'image/jpeg']),
             'https://drrajanskinclinic.com/wp-content/uploads/2024/01/clinic.jpg' => Http::response('clinic-image-content', 200, ['Content-Type' => 'image/jpeg']),
             'https://drrajanskinclinic.com/wp-content/uploads/2024/01/attachment.jpg' => Http::response('attachment-image-content', 200, ['Content-Type' => 'image/jpeg']),
+            'https://drrajanskinclinic.com/wp-content/uploads/2024/01/attachment-extra.jpg' => Http::response('attachment-extra-image-content', 200, ['Content-Type' => 'image/jpeg']),
             'https://drrajanskinclinic.com/wp-content/uploads/2024/01/member.jpg' => Http::response('member-image-content', 200, ['Content-Type' => 'image/jpeg']),
         ]);
 
         $this->artisan('drrajan:sync-content', ['--source' => 'https://drrajanskinclinic.com/sitemap_index.xml'])
-            ->expectsOutputToContain('Found 6 public URLs to sync.')
+            ->expectsOutputToContain('Found 7 public URLs to sync.')
             ->expectsOutputToContain('attachment image')
             ->assertSuccessful();
 
         Http::assertSent(fn ($request) => str_contains($request->url(), 'clinic-hours'));
         Http::assertNotSent(fn ($request) => str_contains($request->url(), 'laser-hair-removal-tag'));
         Http::assertSent(fn ($request) => str_contains($request->url(), 'attachment_id=25'));
+        Http::assertSent(fn ($request) => str_contains($request->url(), 'laser-hair-reduction-1'));
         Http::assertSent(fn ($request) => str_contains($request->url(), 'team/member-1'));
 
         $this->assertDatabaseHas('services', ['slug' => 'laser-hair-reduction']);
@@ -216,7 +226,7 @@ HTML,
         $this->assertSame(2, count(Storage::disk('public')->allFiles('blogs')));
         $this->assertSame(1, count(Storage::disk('public')->allFiles('services')));
         $this->assertSame(1, count(Storage::disk('public')->allFiles('pages')));
-        $this->assertSame(1, count(Storage::disk('public')->allFiles('attachments')));
+        $this->assertSame(2, count(Storage::disk('public')->allFiles('attachments')));
         $this->assertSame(1, count(Storage::disk('public')->allFiles('team')));
     }
 }
