@@ -1,6 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
+@push('styles')
+<style>
+    .brand-partners-section { overflow: hidden; background: #fff; }
+    .brand-partners-viewport {
+        position: relative;
+        overflow: hidden;
+        mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    }
+    .brand-partners-track {
+        display: flex;
+        width: max-content;
+        animation: brand-partners-scroll 36s linear infinite;
+        will-change: transform;
+    }
+    .brand-partners-viewport:hover .brand-partners-track,
+    .brand-partners-viewport:focus-within .brand-partners-track { animation-play-state: paused; }
+    .brand-partners-set {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: space-around;
+        gap: clamp(1.5rem, 4vw, 3.5rem);
+        width: max-content;
+        min-width: 100vw;
+        padding: 0 clamp(1rem, 3vw, 2.5rem);
+        box-sizing: border-box;
+    }
+    .brand-partner-link {
+        display: flex;
+        flex: 0 0 170px;
+        width: 170px;
+        height: 88px;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: .5rem;
+        background: #f8fbfa;
+        border: 1px solid #e1ece9;
+        border-radius: 6px;
+        transition: opacity .2s ease, transform .2s ease;
+    }
+    .brand-partner-link:hover,
+    .brand-partner-link:focus-visible { opacity: .78; transform: translateY(-2px); }
+    .brand-partner-link img {
+        display: block;
+        width: 150px;
+        height: 64px;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    @keyframes brand-partners-scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+    @media (max-width: 640px) {
+        .brand-partners-track { animation-duration: 28s; }
+        .brand-partner-link { flex-basis: 132px; width: 132px; height: 76px; }
+        .brand-partner-link img { width: 112px; height: 52px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .brand-partners-track { animation: none; width: 100%; flex-wrap: wrap; justify-content: center; }
+        .brand-partners-set { min-width: 0; flex-wrap: wrap; justify-content: center; }
+        .brand-partners-set[aria-hidden="true"] { display: none; }
+        .brand-partners-viewport { mask-image: none; -webkit-mask-image: none; }
+    }
+</style>
+@endpush
 
 {{-- ══════════════════════════════════════════
      HERO

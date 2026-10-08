@@ -358,6 +358,26 @@
 <style>
     .settings-tab { color: var(--muted); background: #fff; border: 1px solid var(--border); cursor: pointer; }
     .settings-tab.active { color: #fff; background: var(--primary); border-color: var(--primary); }
+    .brand-partner-admin-preview {
+        display: flex;
+        width: 120px;
+        height: 80px;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        overflow: hidden;
+        background: #f8fbfa;
+        border: 1px solid #e1ece9;
+        border-radius: 6px;
+    }
+    .brand-partner-admin-preview img {
+        display: block;
+        width: 104px;
+        height: 56px;
+        max-width: 100%;
+        object-fit: contain;
+    }
 </style>
 <script>
     (function () {

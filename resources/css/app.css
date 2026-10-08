@@ -2122,6 +2122,7 @@ a[aria-label="WhatsApp Chat"] {
 .brand-partner-link {
   display: flex;
   flex: 0 0 170px;
+  width: 170px;
   height: 88px;
   align-items: center;
   justify-content: center;
@@ -2141,14 +2142,15 @@ a[aria-label="WhatsApp Chat"] {
 
 .brand-partner-link img {
   display: block;
-  width: auto;
-  height: auto;
+  width: 150px;
+  height: 64px;
   max-width: 100%;
-  max-height: 64px;
   object-fit: contain;
 }
 
 .brand-partner-admin-preview {
+  width: 120px;
+  height: 80px;
   box-sizing: border-box;
   background: #f8fbfa;
   border: 1px solid #e1ece9;
@@ -2157,10 +2159,9 @@ a[aria-label="WhatsApp Chat"] {
 
 .brand-partner-admin-preview img {
   display: block;
-  width: auto;
-  height: auto;
+  width: 104px;
+  height: 56px;
   max-width: 100%;
-  max-height: 56px;
   object-fit: contain;
 }
 
@@ -2174,8 +2175,8 @@ a[aria-label="WhatsApp Chat"] {
   .tq-track { animation-duration: 28s; }
   .tq-card  { width: 260px; }
   .brand-partners-track { animation-duration: 28s; }
-  .brand-partner-link { flex-basis: 132px; height: 76px; }
-  .brand-partner-link img { max-height: 56px; }
+  .brand-partner-link { flex-basis: 132px; width: 132px; height: 76px; }
+  .brand-partner-link img { width: 112px; height: 52px; }
 }
 
 /* Respect prefers-reduced-motion — stop scrolling, show static row */
