@@ -2126,6 +2126,10 @@ a[aria-label="WhatsApp Chat"] {
   align-items: center;
   justify-content: center;
   padding: .5rem;
+  box-sizing: border-box;
+  background: #f8fbfa;
+  border: 1px solid #e1ece9;
+  border-radius: 6px;
   transition: opacity .2s ease, transform .2s ease;
 }
 
@@ -2137,8 +2141,26 @@ a[aria-label="WhatsApp Chat"] {
 
 .brand-partner-link img {
   display: block;
+  width: auto;
+  height: auto;
   max-width: 100%;
   max-height: 64px;
+  object-fit: contain;
+}
+
+.brand-partner-admin-preview {
+  box-sizing: border-box;
+  background: #f8fbfa;
+  border: 1px solid #e1ece9;
+  border-radius: 6px;
+}
+
+.brand-partner-admin-preview img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 56px;
   object-fit: contain;
 }
 

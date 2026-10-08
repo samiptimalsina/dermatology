@@ -278,7 +278,7 @@
                 @forelse($brandPartners as $index => $partner)
                 <div class="grid grid-cols-1 md:grid-cols-[120px_1fr_1fr_auto] gap-4 items-end border rounded-lg p-4 mb-3"
                      style="border-color:var(--border)">
-                    <div class="h-20 flex items-center justify-center rounded-md bg-white border p-2" style="border-color:var(--border)">
+                    <div class="brand-partner-admin-preview h-20 flex items-center justify-center p-2">
                         <img src="{{ asset('storage/'.($partner['image'] ?? '')) }}"
                              alt="{{ $partner['name'] ?? 'Brand partner' }}"
                              class="max-h-full max-w-full object-contain">
