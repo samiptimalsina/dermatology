@@ -19,6 +19,8 @@ class SiteSettingSeeder extends Seeder
             ['key' => 'color_accent_dark',   'value' => '#A87228', 'type' => 'color', 'group' => 'brand', 'label' => 'Accent Dark'],
             ['key' => 'color_accent_light',  'value' => '#FBF4E8', 'type' => 'color', 'group' => 'brand', 'label' => 'Accent Light (BG tint)'],
             ['key' => 'color_text',          'value' => '#1A2B29', 'type' => 'color', 'group' => 'brand', 'label' => 'Body Text'],
+            ['key' => 'brand_partners_eyebrow', 'value' => 'Featured brands', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Eyebrow'],
+            ['key' => 'brand_partners_heading', 'value' => 'Our Brand Partners', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Heading'],
 
             // ── General ──────────────────────────────────────────────────────────
             ['key' => 'site_name',        'value' => 'Aakar Dermatology',       'type' => 'text',     'group' => 'general', 'label' => 'Site Name'],

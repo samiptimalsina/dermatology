@@ -15,6 +15,14 @@ class SettingController extends Controller
     public function index()
     {
         $groups = ['brand', 'general', 'hero', 'stats', 'contact', 'social', 'about', 'cta'];
+
+        foreach ([
+            ['key' => 'brand_partners_eyebrow', 'value' => 'Featured brands', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Eyebrow'],
+            ['key' => 'brand_partners_heading', 'value' => 'Our Brand Partners', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Heading'],
+        ] as $setting) {
+            SiteSetting::firstOrCreate(['key' => $setting['key']], $setting);
+        }
+
         $settings = SiteSetting::all()->groupBy('group');
 
         return view('admin.settings.index', compact('settings', 'groups'));

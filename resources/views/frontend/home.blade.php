@@ -12,7 +12,7 @@
 
 @php
     /* ── Video resolution ── */
-    $heroVideoUrl   = $settings->get('hero_video', '');
+    $heroVideoUrl   = $settings->get('hero_video') ?? '';
     $heroEmbedUrl   = \App\View\Components\HeroVideoEmbed::embedUrl($heroVideoUrl);
     $orientation    = trim(strtolower($settings->get('hero_video_orientation', 'landscape')));
     $isPortrait     = ($orientation === 'portrait');
@@ -439,8 +439,8 @@ function heroUnmute() {
 @if($brandPartners->isNotEmpty())
 <section class="brand-partners-section py-12" aria-labelledby="brand-partners-title">
     <div class="text-center mb-6">
-        <span class="section-label" style="justify-content:center">Featured brands</span>
-        <h2 id="brand-partners-title" class="section-title">Our Brand Partners</h2>
+        <span class="section-label" style="justify-content:center">{{ $settings->get('brand_partners_eyebrow', 'Featured brands') }}</span>
+        <h2 id="brand-partners-title" class="section-title">{{ $settings->get('brand_partners_heading', 'Our Brand Partners') }}</h2>
         <div class="section-divider center"></div>
     </div>
 

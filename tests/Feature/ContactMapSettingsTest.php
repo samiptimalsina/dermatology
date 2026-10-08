@@ -84,11 +84,17 @@ class ContactMapSettingsTest extends TestCase
             ->assertSee('Brand & Partners')
             ->assertSee('Homepage Brand Partners')
             ->assertSee('add-brand-partner', false)
+            ->assertSee('name="settings[brand_partners_eyebrow]"', false)
+            ->assertSee('name="settings[brand_partners_heading]"', false)
             ->assertDontSee('name="settings[brand_partners]"', false);
 
         $this->actingAs($user)
             ->post(route('admin.settings.update'), [
-                'settings' => ['contact_address' => 'Pulchowk, Lalitpur'],
+                'settings' => [
+                    'contact_address' => 'Pulchowk, Lalitpur',
+                    'brand_partners_eyebrow' => 'Brands we work with',
+                    'brand_partners_heading' => 'Trusted by our partners',
+                ],
                 'brand_partners' => [
                     'uploads' => [[
                         'image' => UploadedFile::fake()->image('partner.png', 640, 320),
@@ -106,7 +112,11 @@ class ContactMapSettingsTest extends TestCase
         $this->assertSame('https://partner.example.com', $brandPartners[0]['link']);
         Storage::disk('public')->assertExists($imagePath);
 
+        SiteSetting::query()->where('key', 'hero_video')->update(['value' => null]);
+
         $this->get(route('home'))
+            ->assertSee('Brands we work with')
+            ->assertSee('Trusted by our partners')
             ->assertSee('href="https://partner.example.com"', false)
             ->assertSee('storage/'.$imagePath, false)
             ->assertSee('alt="Partner Brand"', false);
