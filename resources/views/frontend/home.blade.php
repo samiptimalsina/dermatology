@@ -434,6 +434,40 @@ function heroUnmute() {
 
 
 {{-- ══════════════════════════════════════════
+     BRAND PARTNERS MARQUEE
+══════════════════════════════════════════ --}}
+@if($brandPartners->isNotEmpty())
+<section class="brand-partners-section py-12" aria-labelledby="brand-partners-title">
+    <div class="text-center mb-6">
+        <span class="section-label" style="justify-content:center">Featured brands</span>
+        <h2 id="brand-partners-title" class="section-title">Our Brand Partners</h2>
+        <div class="section-divider center"></div>
+    </div>
+
+    <div class="brand-partners-viewport" role="region" aria-label="Brand partners">
+        <div class="brand-partners-track">
+            @foreach([false, true] as $isDuplicate)
+            <div class="brand-partners-set" @if($isDuplicate) aria-hidden="true" @endif>
+                @foreach($brandPartners as $partner)
+                <a class="brand-partner-link"
+                   href="{{ $partner['link'] }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   @if($isDuplicate) tabindex="-1" @endif>
+                    <img src="{{ asset('storage/'.$partner['image']) }}"
+                         alt="{{ $isDuplicate ? '' : ($partner['name'] ?: 'Brand partner') }}"
+                         loading="lazy">
+                </a>
+                @endforeach
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+
+{{-- ══════════════════════════════════════════
      WELCOME / ABOUT
      • Images: sr-left (slide from left)
      • Copy: sr-right (slide from right)

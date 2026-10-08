@@ -7,6 +7,8 @@
     if ($settings->flatten(1)->firstWhere('key', 'site_logo')?->value && ! in_array($settings->flatten(1)->firstWhere('key', 'site_logo')->value, $logoOptions, true)) {
         array_unshift($logoOptions, $settings->flatten(1)->firstWhere('key', 'site_logo')->value);
     }
+    $brandPartners = json_decode(App\Models\SiteSetting::get('brand_partners', '[]'), true);
+    $brandPartners = is_array($brandPartners) ? $brandPartners : [];
 @endphp
 
 <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
@@ -16,7 +18,7 @@
         @foreach($groups as $tabGroup)
         <button type="button" class="settings-tab whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold {{ $loop->first ? 'active' : '' }}"
                 data-settings-tab="settings-panel-{{ $tabGroup }}" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-            {{ $tabGroup === 'brand' ? 'Brand Colors' : ucfirst($tabGroup).' Settings' }}
+            {{ $tabGroup === 'brand' ? 'Brand & Partners' : ucfirst($tabGroup).' Settings' }}
         </button>
         @endforeach
     </div>
@@ -49,7 +51,7 @@
             @endif
             <div>
                 <h2 class="font-bold text-sm capitalize" style="color:var(--dark)">
-                    {{ $group === 'brand' ? '🎨 Brand Colors' : ucfirst($group).' Settings' }}
+                    {{ $group === 'brand' ? '🎨 Brand & Partners' : ucfirst($group).' Settings' }}
                 </h2>
                 @if($group === 'brand')
                 <p class="text-xs mt-0.5" style="color:var(--muted)">
@@ -62,7 +64,7 @@
         <div class="p-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 @foreach($settings[$group] as $setting)
-                @if(in_array($setting->key, ['header_logo', 'footer_logo', 'site_logos', 'header_logo_path', 'footer_logo_path', 'show_header_logo', 'show_footer_logo'], true))
+                @if(in_array($setting->key, ['header_logo', 'footer_logo', 'site_logos', 'header_logo_path', 'footer_logo_path', 'show_header_logo', 'show_footer_logo', 'brand_partners'], true))
                     @continue
                 @endif
                 <div class="{{ in_array($setting->type, ['textarea']) ? 'sm:col-span-2' : '' }}">
@@ -257,6 +259,85 @@
                 </div>
                 @endforeach
             </div>
+
+            @if($group === 'brand')
+            <section class="mt-8 pt-6 border-t" style="border-color:var(--border)" aria-labelledby="brand-partners-heading">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h3 id="brand-partners-heading" class="font-bold text-sm" style="color:var(--dark)">Homepage Brand Partners</h3>
+                        <p class="text-xs mt-1" style="color:var(--muted)">Upload a logo and set the destination opened when visitors click it.</p>
+                    </div>
+                    <button type="button" id="add-brand-partner" class="btn-outline">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add brand
+                    </button>
+                </div>
+
+                @forelse($brandPartners as $index => $partner)
+                <div class="grid grid-cols-1 md:grid-cols-[120px_1fr_1fr_auto] gap-4 items-end border rounded-lg p-4 mb-3"
+                     style="border-color:var(--border)">
+                    <div class="h-20 flex items-center justify-center rounded-md bg-white border p-2" style="border-color:var(--border)">
+                        <img src="{{ asset('storage/'.($partner['image'] ?? '')) }}"
+                             alt="{{ $partner['name'] ?? 'Brand partner' }}"
+                             class="max-h-full max-w-full object-contain">
+                    </div>
+                    <div>
+                        <label class="form-label" for="brand_partner_name_{{ $index }}">Brand name</label>
+                        <input type="text" id="brand_partner_name_{{ $index }}"
+                               name="brand_partners[existing][{{ $index }}][name]"
+                               value="{{ old('brand_partners.existing.'.$index.'.name', $partner['name'] ?? '') }}"
+                               maxlength="120" class="form-input">
+                    </div>
+                    <div>
+                        <label class="form-label" for="brand_partner_link_{{ $index }}">Click destination</label>
+                        <input type="url" id="brand_partner_link_{{ $index }}"
+                               name="brand_partners[existing][{{ $index }}][link]"
+                               value="{{ old('brand_partners.existing.'.$index.'.link', $partner['link'] ?? '') }}"
+                               placeholder="https://example.com" class="form-input" required>
+                    </div>
+                    <label class="flex items-center gap-2 text-xs pb-2" style="color:var(--muted)">
+                        <input type="checkbox" name="brand_partners[remove][]" value="{{ $index }}"
+                               class="w-4 h-4 rounded" style="accent-color:var(--primary)">
+                        Remove
+                    </label>
+                </div>
+                @empty
+                <p class="text-sm mb-4" style="color:var(--muted)">No brand partners have been added.</p>
+                @endforelse
+
+                <div id="new-brand-partner-rows" class="space-y-3"></div>
+                <template id="brand-partner-row-template">
+                    <div data-brand-partner-upload class="grid grid-cols-1 md:grid-cols-[minmax(10rem,1.2fr)_minmax(8rem,1fr)_minmax(12rem,1fr)_auto] gap-4 items-end border rounded-lg p-4"
+                         style="border-color:var(--border)">
+                        <div>
+                            <label class="form-label" for="brand_partner_image___INDEX__">Brand image</label>
+                            <input type="file" id="brand_partner_image___INDEX__"
+                                   name="brand_partners[uploads][__INDEX__][image]"
+                                   class="form-input" accept="image/jpeg,image/png,image/webp" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="brand_partner_new_link___INDEX__">Click destination</label>
+                            <input type="url" id="brand_partner_new_link___INDEX__"
+                                   name="brand_partners[uploads][__INDEX__][link]"
+                                   placeholder="https://example.com" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="brand_partner_new_name___INDEX__">Brand name</label>
+                            <input type="text" id="brand_partner_new_name___INDEX__"
+                                   name="brand_partners[uploads][__INDEX__][name]"
+                                   maxlength="120" class="form-input">
+                        </div>
+                        <button type="button" class="btn-outline" data-remove-brand-partner-row aria-label="Remove this new brand row">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </template>
+            </section>
+            @endif
         </div>
     </div>
     @endif
@@ -279,6 +360,25 @@
     .settings-tab.active { color: #fff; background: var(--primary); border-color: var(--primary); }
 </style>
 <script>
+    (function () {
+        const addButton = document.getElementById('add-brand-partner');
+        const rows = document.getElementById('new-brand-partner-rows');
+        const template = document.getElementById('brand-partner-row-template');
+
+        if (!addButton || !rows || !template) return;
+
+        let nextIndex = 0;
+
+        addButton.addEventListener('click', function () {
+            rows.insertAdjacentHTML('beforeend', template.innerHTML.replaceAll('__INDEX__', String(nextIndex++)));
+        });
+
+        rows.addEventListener('click', function (event) {
+            const removeButton = event.target.closest('[data-remove-brand-partner-row]');
+            if (removeButton) removeButton.closest('[data-brand-partner-upload]').remove();
+        });
+    })();
+
     document.querySelectorAll('[data-settings-tab]').forEach(function (tab) {
         tab.addEventListener('click', function () {
             document.querySelectorAll('[data-settings-tab]').forEach(function (item) {
