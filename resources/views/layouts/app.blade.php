@@ -15,7 +15,7 @@
         $siteName    = $globalSettings->get('site_name','Aakar Dermatology');
         $siteDesc    = $globalSettings->get('site_description','Comprehensive Medical & Aesthetic Dermatology Services in Lalitpur');
         $uploadedLogos = json_decode($globalSettings->get('site_logos', '[]'), true) ?: [];
-        $defaultLogo  = $uploadedLogos[0] ?? $globalSettings->get('site_logo');
+        $defaultLogo  = $globalSettings->get('site_logo') ?: ($uploadedLogos[0] ?? null);
         $headerLogo  = $defaultLogo;
         $footerLogo  = $defaultLogo;
         $managedMenuPages = App\Models\SeoMeta::whereIn('page', ['videos', 'privacy_policy', 'terms_and_conditions'])->get()->keyBy('page');

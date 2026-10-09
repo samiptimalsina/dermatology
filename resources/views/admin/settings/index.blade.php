@@ -105,9 +105,13 @@
                         @if($setting->key === 'site_logo')
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                             @forelse($logoOptions as $logoPath)
-                            <div class="border rounded-xl p-3 flex items-center gap-4" style="border-color:var(--border)">
+                            <label class="border rounded-xl p-3 flex items-center gap-4 cursor-pointer" style="border-color:var(--border)">
+                                <input type="radio" name="settings[site_logo]" value="{{ $logoPath }}"
+                                       {{ old('settings.site_logo', $setting->value ?: ($logoOptions[0] ?? '')) === $logoPath ? 'checked' : '' }}
+                                       aria-label="Use this logo">
                                 <img src="{{ asset('storage/'.$logoPath) }}" alt="Uploaded logo" class="h-16 w-28 object-contain flex-shrink-0">
-                            </div>
+                                <span class="text-xs" style="color:var(--muted)">Use this logo</span>
+                            </label>
                             @empty
                             <p class="text-sm" style="color:var(--muted)">No logos uploaded yet.</p>
                             @endforelse

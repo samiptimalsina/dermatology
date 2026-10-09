@@ -119,6 +119,20 @@ class ContactMapSettingsTest extends TestCase
             ->assertOk()
             ->assertSee('storage/'.$activeLogo, false)
             ->assertSee('<link rel="icon" href="'.asset('storage/'.$newFavicon).'">', false);
+
+        $this->actingAs($user)
+            ->post(route('admin.settings.update'), [
+                'settings' => [
+                    'contact_address' => 'Pulchowk, Lalitpur',
+                    'site_logo' => $oldLogo,
+                ],
+            ])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $this->assertSame($oldLogo, SiteSetting::query()->where('key', 'site_logo')->value('value'));
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('storage/'.$oldLogo, false);
     }
 
     public function test_settings_manager_can_upload_link_and_remove_a_homepage_brand_partner(): void
