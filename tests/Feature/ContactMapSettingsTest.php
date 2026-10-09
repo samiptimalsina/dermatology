@@ -72,6 +72,55 @@ class ContactMapSettingsTest extends TestCase
         $this->assertSame([], Storage::disk('public')->allFiles('settings/contact-map'));
     }
 
+    public function test_new_logo_upload_becomes_active_and_favicon_is_rendered_and_replaced(): void
+    {
+        Storage::fake('public');
+        $this->seed([RolePermissionSeeder::class, SiteSettingSeeder::class]);
+        $user = User::factory()->create();
+        $user->givePermissionTo('manage settings');
+
+        $this->actingAs($user)
+            ->post(route('admin.settings.update'), [
+                'settings' => ['contact_address' => 'Pulchowk, Lalitpur'],
+                'images' => [
+                    'site_logos' => [UploadedFile::fake()->image('old-logo.png', 400, 120)],
+                    'site_favicon' => UploadedFile::fake()->image('old-icon.png', 64, 64),
+                ],
+            ])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $oldLogo = json_decode(SiteSetting::query()->where('key', 'site_logos')->value('value'), true)[0];
+        $oldFavicon = SiteSetting::query()->where('key', 'site_favicon')->value('value');
+        Storage::disk('public')->assertExists($oldLogo);
+        Storage::disk('public')->assertExists($oldFavicon);
+
+        $this->actingAs($user)
+            ->post(route('admin.settings.update'), [
+                'settings' => ['contact_address' => 'Pulchowk, Lalitpur'],
+                'images' => [
+                    'site_logos' => [UploadedFile::fake()->image('new-logo.png', 400, 120)],
+                    'site_favicon' => UploadedFile::fake()->image('new-icon.png', 64, 64),
+                ],
+            ])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $logos = json_decode(SiteSetting::query()->where('key', 'site_logos')->value('value'), true);
+        $activeLogo = SiteSetting::query()->where('key', 'site_logo')->value('value');
+        $newFavicon = SiteSetting::query()->where('key', 'site_favicon')->value('value');
+
+        $this->assertCount(2, $logos);
+        $this->assertSame($logos[0], $activeLogo);
+        $this->assertNotSame($oldLogo, $activeLogo);
+        Storage::disk('public')->assertExists($oldLogo);
+        Storage::disk('public')->assertMissing($oldFavicon);
+        Storage::disk('public')->assertExists($newFavicon);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('storage/'.$activeLogo, false)
+            ->assertSee('<link rel="icon" href="'.asset('storage/'.$newFavicon).'">', false);
+    }
+
     public function test_settings_manager_can_upload_link_and_remove_a_homepage_brand_partner(): void
     {
         Storage::fake('public');

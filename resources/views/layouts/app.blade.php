@@ -38,6 +38,9 @@
     <meta property="og:image" content="{{ asset('storage/'.$seoOgImage) }}">
     @endif
     <link rel="canonical" href="@yield('canonical_url', $seoCanon ?? url()->current())">
+    @if($globalSettings->get('site_favicon'))
+    <link rel="icon" href="{{ asset('storage/'.$globalSettings->get('site_favicon')) }}">
+    @endif
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">

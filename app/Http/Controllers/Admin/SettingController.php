@@ -33,6 +33,9 @@ class SettingController extends Controller
         $validated = $request->validate([
             'settings' => 'required|array',
             'settings.*' => 'nullable|string',
+            'images.site_logos' => ['nullable', 'array', 'max:10'],
+            'images.site_logos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'images.site_favicon' => ['nullable', 'image', 'mimes:png,webp', 'dimensions:ratio=1/1', 'max:2048'],
             'images.contact_map_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'brand_partners' => ['nullable', 'array:existing,remove,uploads'],
             'brand_partners.existing' => ['nullable', 'array'],
@@ -61,10 +64,15 @@ class SettingController extends Controller
         $logoFiles = $request->file('images.site_logos', []);
         if ($logoFiles) {
             $logos = json_decode(SiteSetting::get('site_logos', '[]'), true) ?: [];
+            $newLogos = [];
+
             foreach ($logoFiles as $file) {
-                $logos[] = $file->store('settings/logos', 'public');
+                $newLogos[] = $file->store('settings/logos', 'public');
             }
-            SiteSetting::set('site_logos', json_encode(array_values(array_unique($logos))));
+
+            $logos = array_values(array_unique(array_merge($newLogos, $logos)));
+            SiteSetting::set('site_logos', json_encode($logos));
+            SiteSetting::set('site_logo', $newLogos[0]);
         }
 
         // Handle the remaining image uploads separately.
@@ -74,8 +82,13 @@ class SettingController extends Controller
             }
             $directory = $key === 'contact_map_image' ? 'settings/contact-map' : 'settings';
             $path = $file->store($directory, 'public');
+            $previousPath = $key === 'site_favicon' ? SiteSetting::get('site_favicon') : null;
             SiteSetting::where('key', $key)->update(['value' => $path]);
             Cache::forget("setting_{$key}");
+
+            if ($previousPath && Str::startsWith($previousPath, 'settings/')) {
+                Storage::disk('public')->delete($previousPath);
+            }
         }
 
         $currentPartners = json_decode(SiteSetting::get('brand_partners', '[]'), true);

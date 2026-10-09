@@ -125,7 +125,7 @@
                         @endif
                            @if($setting->key === 'site_logo')
                            <input type="file" name="images[site_logos][]" id="setting_site_logos" class="form-input" accept="image/*" multiple>
-                           <p class="text-xs mt-1.5" style="color:var(--muted)">Choose one or more logo images. The first uploaded logo is used in the header and footer.</p>
+                           <p class="text-xs mt-1.5" style="color:var(--muted)">Choose one or more logo images. The newest upload is used in the header and footer.</p>
                            @elseif($setting->key === 'contact_map_image')
                            <input type="file" name="images[contact_map_image]" id="setting_contact_map_image" class="form-input" accept="image/jpeg,image/png,image/webp">
                            @else
