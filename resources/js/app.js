@@ -142,11 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const el     = entry.target;
       const raw    = el.dataset.count;                // e.g. "86+"
       const target = parseInt(raw, 10);
-      const suffix = raw.replace(/[0-9]/g, '');
+      const suffix = raw.replace(/[0-9]/g, '') || el.textContent.trim().replace(/[0-9]/g, '');
       const duration = prefersReduced ? 0 : 2600;    // ms
 
       if (prefersReduced) {
-        el.textContent = raw;
+        el.textContent = target + suffix;
         counterObserver.unobserve(el);
         return;
       }
