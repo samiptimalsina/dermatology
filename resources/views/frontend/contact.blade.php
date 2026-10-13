@@ -139,6 +139,8 @@
                                       class="form-input resize-none"
                                       placeholder="Describe your skin concern or any questions...">{{ old('message') }}</textarea>
                         </div>
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFVQPF2ob8jspMk5"></div>
+
                         <button type="submit" class="btn-primary w-full justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
