@@ -21,6 +21,7 @@
         $managedMenuPages = App\Models\SeoMeta::whereIn('page', ['videos', 'privacy_policy', 'terms_and_conditions'])->get()->keyBy('page');
     @endphp
     <meta name="robots" content="{{ $seoNoIndex ? 'noindex,nofollow' : 'index,follow' }}">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     {{-- SEO Meta --}}
     <title>@yield('meta_title', $seoTitle ?? ($siteName . ' | Skin · Hair · Laser'))</title>
