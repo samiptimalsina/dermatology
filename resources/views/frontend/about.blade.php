@@ -13,12 +13,23 @@
 
 {{-- Doctor section --}}
 @foreach($team as $member)
+@php
+    $aboutDoctorName = $loop->first ? ($settings->get('doctor_name') ?: $member->name) : $member->name;
+    $aboutDoctorTitle = $loop->first ? ($settings->get('doctor_title') ?: $member->designation) : $member->designation;
+    $aboutDoctorBio = $loop->first ? ($settings->get('doctor_bio') ?: $member->bio) : $member->bio;
+    $yearsExperienceRaw = $settings->get('stat_years') ?: ($member->years_experience ?? '10+');
+    $happyPatientsRaw = $settings->get('stat_patients') ?: ($member->total_patients ?? '86+');
+    $yearsExperienceValue = preg_replace('/[^0-9]/', '', (string) $yearsExperienceRaw);
+    $happyPatientsValue = preg_replace('/[^0-9]/', '', (string) $happyPatientsRaw);
+    $yearsExperienceSuffix = preg_replace('/[0-9]/', '', (string) $yearsExperienceRaw) ?: '+';
+    $happyPatientsSuffix = preg_replace('/[0-9]/', '', (string) $happyPatientsRaw) ?: '+';
+@endphp
 <section class="py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center {{ !$loop->odd ? 'lg:flex-row-reverse' : '' }}">
             <div class="reveal">
-                <span class="section-label">{{ $member->designation }}</span>
-                <h2 class="section-title text-4xl">{{ $member->name }}</h2>
+                <span class="section-label">{{ $aboutDoctorTitle }}</span>
+                <h2 class="section-title text-4xl">{{ $aboutDoctorName }}</h2>
                 <div class="section-divider"></div>
                 @if($member->qualification)
                 <p class="font-semibold mb-1" style="color:var(--accent)">{{ $member->qualification }}</p>
@@ -26,15 +37,15 @@
                 @if($member->specialization)
                 <p class="text-sm mb-4" style="color:var(--muted)">Specialization: {{ $member->specialization }}</p>
                 @endif
-                <p class="leading-relaxed mb-6" style="color:var(--muted)">{{ $member->bio }}</p>
+                <p class="leading-relaxed mb-6" style="color:var(--muted)">{{ $aboutDoctorBio }}</p>
 
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="rounded-xl p-4 text-center" style="background:var(--primary-light)">
-                        <div class="text-3xl font-bold" style="color:var(--accent);font-family:'Playfair Display',serif" data-count="{{ $member->years_experience }}">0+</div>
+                        <div class="text-3xl font-bold" style="color:var(--accent);font-family:'Playfair Display',serif" data-count="{{ $yearsExperienceValue ?: 10 }}">0{{ $yearsExperienceSuffix }}</div>
                         <div class="text-sm" style="color:var(--muted)">Years Experience</div>
                     </div>
                     <div class="rounded-xl p-4 text-center" style="background:var(--primary-light)">
-                        <div class="text-3xl font-bold" style="color:var(--accent);font-family:'Playfair Display',serif" data-count="{{ $member->total_patients }}">0+</div>
+                        <div class="text-3xl font-bold" style="color:var(--accent);font-family:'Playfair Display',serif" data-count="{{ $happyPatientsValue ?: 86 }}">0{{ $happyPatientsSuffix }}</div>
                         <div class="text-sm" style="color:var(--muted)">Happy Patients</div>
                     </div>
                 </div>
@@ -50,7 +61,7 @@
                 <div class="w-80 h-96 rounded-3xl overflow-hidden shadow-2xl"
                      style="background:linear-gradient(160deg,var(--accent-light),var(--accent))">
                     @if($aboutDrSrc)
-                    <img src="{{ $aboutDrSrc }}" alt="{{ $member->name }}" class="w-full h-full object-cover object-top">
+                        <img src="{{ $aboutDrSrc }}" alt="{{ $aboutDoctorName }}" class="w-full h-full object-cover object-top">
                     @else
                     <div class="w-full h-full flex items-center justify-center">
                         <div class="text-center text-white px-6">
@@ -61,8 +72,8 @@
                                           d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
                             </div>
-                            <div class="text-lg font-bold mb-1" style="font-family:'Playfair Display',serif">{{ $member->name }}</div>
-                            <div class="text-xs opacity-75">{{ $member->designation }}</div>
+                            <div class="text-lg font-bold mb-1" style="font-family:'Playfair Display',serif">{{ $aboutDoctorName }}</div>
+                            <div class="text-xs opacity-75">{{ $aboutDoctorTitle }}</div>
                             <div class="text-xs mt-3 opacity-50">Upload photo in<br>Admin → Settings → Doctor Photo</div>
                         </div>
                     </div>

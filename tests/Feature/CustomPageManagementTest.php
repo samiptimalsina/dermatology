@@ -97,7 +97,11 @@ class CustomPageManagementTest extends TestCase
             ->get(route('admin.seo.custom-pages.edit', $customPage))
             ->assertOk()
             ->assertSee('name="slug"', false)
-            ->assertSee('value="clinic-hours"', false);
+            ->assertSee('value="clinic-hours"', false)
+            ->assertSee('blocks')
+            ->assertSee('Heading 1')
+            ->assertSee('Heading 2')
+            ->assertSee('Heading 3');
 
         $this->put(route('admin.seo.custom-pages.update', $customPage), [
             'title' => 'Updated Clinic Hours',

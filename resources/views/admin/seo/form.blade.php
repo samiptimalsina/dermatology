@@ -8,6 +8,94 @@
     <form action="{{ route('admin.seo.update',$seo) }}" method="POST" enctype="multipart/form-data"
           class="bg-white rounded-2xl shadow-sm p-6 space-y-5">
         @csrf @method('PUT')
+        @if($seo->page === 'about')
+        <section class="space-y-5 rounded-lg border p-5" style="border-color:var(--border)">
+            <div>
+                <h2 class="font-bold text-lg" style="color:var(--dark)">About Page Settings</h2>
+                <p class="text-sm mt-1" style="color:var(--muted)">These values are shared with Settings → About and Stats.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="form-label" for="about_doctor_name">Doctor Name</label>
+                    <input type="text" id="about_doctor_name" name="about_settings[doctor_name]"
+                           value="{{ old('about_settings.doctor_name', $aboutSettings->get('doctor_name')?->value) }}" class="form-input" maxlength="255">
+                </div>
+                <div>
+                    <label class="form-label" for="about_doctor_title">Doctor Title</label>
+                    <input type="text" id="about_doctor_title" name="about_settings[doctor_title]"
+                           value="{{ old('about_settings.doctor_title', $aboutSettings->get('doctor_title')?->value) }}" class="form-input" maxlength="255">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="form-label" for="about_doctor_bio">Doctor Bio</label>
+                    <textarea id="about_doctor_bio" name="about_settings[doctor_bio]" rows="5" class="form-input resize-y">{{ old('about_settings.doctor_bio', $aboutSettings->get('doctor_bio')?->value) }}</textarea>
+                </div>
+                @foreach(['doctor_photo' => 'Doctor Photo', 'about_clinic_image' => 'About Clinic Image'] as $imageKey => $imageLabel)
+                <div>
+                    <label class="form-label" for="about_image_{{ $imageKey }}">{{ $imageLabel }}</label>
+                    @if($aboutSettings->get($imageKey)?->value)
+                    <img src="{{ asset('storage/'.$aboutSettings->get($imageKey)->value) }}" alt="{{ $imageLabel }}" class="h-24 rounded-lg object-cover mb-2">
+                    @endif
+                    <input type="file" id="about_image_{{ $imageKey }}" name="about_images[{{ $imageKey }}]" class="form-input" accept="image/jpeg,image/png,image/webp">
+                </div>
+                @endforeach
+                <div>
+                    <label class="form-label" for="about_stat_years">Years Experience</label>
+                    <input type="text" id="about_stat_years" name="about_settings[stat_years]"
+                           value="{{ old('about_settings.stat_years', $aboutSettings->get('stat_years')?->value) }}" class="form-input" maxlength="50">
+                </div>
+                <div>
+                    <label class="form-label" for="about_stat_patients">Happy Patients</label>
+                    <input type="text" id="about_stat_patients" name="about_settings[stat_patients]"
+                           value="{{ old('about_settings.stat_patients', $aboutSettings->get('stat_patients')?->value) }}" class="form-input" maxlength="50">
+                </div>
+            </div>
+        </section>
+        @endif
+        @if($seo->page === 'contact')
+        <section class="space-y-5 rounded-lg border p-5" style="border-color:var(--border)">
+            <div>
+                <h2 class="font-bold text-lg" style="color:var(--dark)">Contact Page Settings</h2>
+                <p class="text-sm mt-1" style="color:var(--muted)">These values are shared with Settings → Contact.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label class="form-label" for="contact_phone">Phone</label>
+                    <input type="tel" id="contact_phone" name="contact_settings[contact_phone]"
+                           value="{{ old('contact_settings.contact_phone', $contactSettings->get('contact_phone')?->value) }}" class="form-input" maxlength="50">
+                </div>
+                <div>
+                    <label class="form-label" for="contact_phone2">Phone 2</label>
+                    <input type="tel" id="contact_phone2" name="contact_settings[contact_phone2]"
+                           value="{{ old('contact_settings.contact_phone2', $contactSettings->get('contact_phone2')?->value) }}" class="form-input" maxlength="50">
+                </div>
+                <div>
+                    <label class="form-label" for="contact_email">Email</label>
+                    <input type="email" id="contact_email" name="contact_settings[contact_email]"
+                           value="{{ old('contact_settings.contact_email', $contactSettings->get('contact_email')?->value) }}" class="form-input" maxlength="255">
+                </div>
+                <div>
+                    <label class="form-label" for="contact_hours">Office Hours</label>
+                    <input type="text" id="contact_hours" name="contact_settings[contact_hours]"
+                           value="{{ old('contact_settings.contact_hours', $contactSettings->get('contact_hours')?->value) }}" class="form-input" maxlength="255">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="form-label" for="contact_address">Address</label>
+                    <textarea id="contact_address" name="contact_settings[contact_address]" rows="3" class="form-input resize-y">{{ old('contact_settings.contact_address', $contactSettings->get('contact_address')?->value) }}</textarea>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="form-label" for="google_maps_embed">Google Maps Embed URL</label>
+                    <textarea id="google_maps_embed" name="contact_settings[google_maps_embed]" rows="2" class="form-input resize-y">{{ old('contact_settings.google_maps_embed', $contactSettings->get('google_maps_embed')?->value) }}</textarea>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="form-label" for="contact_map_image">Clinic Map Image</label>
+                    @if($contactSettings->get('contact_map_image')?->value)
+                    <img src="{{ asset('storage/'.$contactSettings->get('contact_map_image')->value) }}" alt="Clinic map preview" class="h-24 rounded-lg object-cover mb-2">
+                    @endif
+                    <input type="file" id="contact_map_image" name="contact_images[contact_map_image]" class="form-input" accept="image/jpeg,image/png,image/webp">
+                </div>
+            </div>
+        </section>
+        @endif
         <div class="grid grid-cols-1 gap-5">
             <div>
                 <label class="form-label">Page Slug <span style="color:#EF4444">*</span></label>

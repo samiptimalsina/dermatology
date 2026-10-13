@@ -864,8 +864,16 @@ document.addEventListener('DOMContentLoaded', function () {
         tinymce.init({
             selector: '.rich-editor', height: 320, menubar: false,
             plugins: 'advlist autolink lists link image code preview',
-            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code preview',
-            content_style: 'body{font-family:Inter,sans-serif;color:#1A2B29;}',
+            toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code preview',
+            block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;Preformatted=pre',
+            style_formats: [
+                { title: 'Heading 1', block: 'h1' },
+                { title: 'Heading 2', block: 'h2' },
+                { title: 'Heading 3', block: 'h3' },
+                { title: 'Paragraph', block: 'p' },
+                { title: 'Blockquote', block: 'blockquote' }
+            ],
+            content_style: 'body{font-family:Inter,sans-serif;color:#1A2B29;} h1{font-size:2.25rem;line-height:1.2;margin:1rem 0;} h2{font-size:1.8rem;line-height:1.3;margin:.9rem 0;} h3{font-size:1.4rem;line-height:1.35;margin:.8rem 0;} p{margin:0 0 1rem;} img{max-width:100%;height:auto;}',
             images_upload_handler: function (blobInfo) {
                 return new Promise(function (resolve) {
                     var reader = new FileReader();
