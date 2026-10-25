@@ -33,7 +33,7 @@ class HomeController extends Controller
         $whyChooseUs = WhyChooseUs::active()->ordered()->get();
         $testimonials = Testimonial::active()->featured()->ordered()->get();
         $beforeAfters = BeforeAfter::active()->ordered()->take(6)->get();
-        $featuredBlogs = Blog::published()->featured()->latest()->take(3)->get();
+        $featuredBlogs = Blog::published()->latest()->take(3)->get();
 
         return view('frontend.home', compact(
             'seo',

@@ -900,7 +900,7 @@ h1,h2,h3,h4,h5,h6 {
    FOOTER
 ──────────────────────────────────── */
 .footer {
-  background: linear-gradient(170deg, var(--dark) 0%, var(--primary-dark) 100%);
+  background: #042D25;
   color: rgba(255,255,255,.72);
   position: relative;
 }
