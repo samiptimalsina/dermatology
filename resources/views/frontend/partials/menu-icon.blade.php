@@ -17,7 +17,7 @@
     ];
 @endphp
 @if($materialIcon)
-<span class="material-symbols-outlined inline-flex h-4 w-4 shrink-0 items-center justify-center text-base leading-none" data-menu-icon aria-hidden="true">{{ $materialIcon }}</span>
+<span class="material-symbols-outlined inline-flex h-4 w-4 shrink-0 items-center justify-center text-[18px] leading-none" data-menu-icon aria-hidden="true">{{ $materialIcon }}</span>
 @else
 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" data-menu-icon>
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $menuIconPaths[$icon] ?? $menuIconPaths['info'] }}"/>
