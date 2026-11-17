@@ -107,15 +107,7 @@
         }
     </style>
 
-    @php
-        $metaHeadScripts = json_decode((string) $globalSettings->get('meta_head_scripts', '[]'), true);
-        $metaHeadScripts = is_array($metaHeadScripts) ? $metaHeadScripts : [];
-    @endphp
-    @foreach($metaHeadScripts as $metaHeadScript)
-        @if(is_string($metaHeadScript) && in_array(strtolower((string) parse_url($metaHeadScript, PHP_URL_SCHEME)), ['http', 'https'], true))
-    <script src="{{ $metaHeadScript }}" async defer></script>
-        @endif
-    @endforeach
+    {!! $globalSettings->get('meta_head_tags', '') !!}
 
     @stack('styles')
 </head>

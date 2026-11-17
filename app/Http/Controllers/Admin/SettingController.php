@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class SettingController extends Controller
 {
@@ -19,7 +20,7 @@ class SettingController extends Controller
         foreach ([
             ['key' => 'brand_partners_eyebrow', 'value' => 'Featured brands', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Eyebrow'],
             ['key' => 'brand_partners_heading', 'value' => 'Our Brand Partners', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Heading'],
-            ['key' => 'meta_head_scripts', 'value' => '[]', 'type' => 'textarea', 'group' => 'meta_head', 'label' => 'Script URLs'],
+            ['key' => 'meta_head_tags', 'value' => '', 'type' => 'textarea', 'group' => 'meta_head', 'label' => 'Custom Meta Tags'],
         ] as $setting) {
             SiteSetting::firstOrCreate(['key' => $setting['key']], $setting);
         }
@@ -34,8 +35,7 @@ class SettingController extends Controller
         $validated = $request->validate([
             'settings' => 'required|array',
             'settings.*' => 'nullable|string',
-            'meta_head_scripts' => ['nullable', 'array', 'max:20'],
-            'meta_head_scripts.*' => ['nullable', 'string', 'url:http,https', 'max:2048'],
+            'meta_head_tags' => ['nullable', 'string', 'max:10000'],
             'images.site_logos' => ['nullable', 'array', 'max:10'],
             'images.site_logos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'images.site_favicon' => ['nullable', 'image', 'mimes:png,webp', 'dimensions:ratio=1/1', 'max:2048'],
@@ -53,9 +53,10 @@ class SettingController extends Controller
             'brand_partners.uploads.*.name' => ['nullable', 'string', 'max:120'],
             'brand_partners.uploads.*.link' => ['required', 'url:http,https', 'max:2048'],
         ]);
+        $metaHeadTags = $this->sanitizeMetaHeadTags($validated['meta_head_tags'] ?? '');
 
         foreach ($request->input('settings', []) as $key => $value) {
-            if (in_array($key, ['brand_partners', 'meta_head_scripts'], true)) {
+            if ($key === 'brand_partners') {
                 continue;
             }
 
@@ -63,22 +64,17 @@ class SettingController extends Controller
             Cache::forget("setting_{$key}");
         }
 
-        if ($request->exists('meta_head_scripts')) {
-            $metaHeadScripts = array_values(array_filter(
-                $validated['meta_head_scripts'] ?? [],
-                static fn ($url) => filled($url)
-            ));
-
+        if ($request->exists('meta_head_tags')) {
             SiteSetting::updateOrCreate(
-                ['key' => 'meta_head_scripts'],
+                ['key' => 'meta_head_tags'],
                 [
-                    'value' => json_encode($metaHeadScripts, JSON_THROW_ON_ERROR),
+                    'value' => $metaHeadTags,
                     'type' => 'textarea',
                     'group' => 'meta_head',
-                    'label' => 'Script URLs',
+                    'label' => 'Custom Meta Tags',
                 ]
             );
-            Cache::forget('setting_meta_head_scripts');
+            Cache::forget('setting_meta_head_tags');
         }
 
         // Handle multiple logo uploads separately.
@@ -165,5 +161,72 @@ class SettingController extends Controller
 
         return redirect()->route('admin.settings.index')
             ->with('success', 'Settings saved successfully.');
+    }
+
+    private function sanitizeMetaHeadTags(string $markup): string
+    {
+        if (trim($markup) === '') {
+            return '';
+        }
+
+        $document = new \DOMDocument('1.0', 'UTF-8');
+        $previousErrorSetting = libxml_use_internal_errors(true);
+
+        try {
+            $loaded = $document->loadHTML(
+                '<!DOCTYPE html><html><head>'.$markup.'</head><body></body></html>',
+                LIBXML_NONET
+            );
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previousErrorSetting);
+        }
+
+        $metaTags = $document->getElementsByTagName('meta');
+        preg_match_all('/<meta\b/i', $markup, $metaMarkup);
+
+        if (! $loaded || count($metaTags) === 0 || count($metaTags) !== count($metaMarkup[0])) {
+            throw ValidationException::withMessages([
+                'meta_head_tags' => 'Enter only valid meta tags.',
+            ]);
+        }
+
+        $allowedAttributes = ['charset', 'content', 'http-equiv', 'itemprop', 'name', 'property', 'script'];
+        $sanitizedTags = [];
+
+        foreach ($document->getElementsByTagName('*') as $element) {
+            if ($element->tagName !== 'html' && $element->tagName !== 'head' && $element->tagName !== 'body' && $element->tagName !== 'meta') {
+                throw ValidationException::withMessages([
+                    'meta_head_tags' => 'Only meta tags are allowed in this field.',
+                ]);
+            }
+        }
+
+        foreach ($metaTags as $metaTag) {
+            $attributes = [];
+
+            foreach ($metaTag->attributes as $attribute) {
+                $name = strtolower($attribute->name);
+
+                if (! in_array($name, $allowedAttributes, true)) {
+                    throw ValidationException::withMessages([
+                        'meta_head_tags' => 'Meta tags may only use supported metadata attributes.',
+                    ]);
+                }
+
+                if ($name === 'http-equiv' && strtolower($attribute->value) === 'refresh') {
+                    throw ValidationException::withMessages([
+                        'meta_head_tags' => 'Refresh meta tags are not allowed.',
+                    ]);
+                }
+
+                $value = htmlspecialchars($attribute->value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+                $attributes[] = $name.'="'.$value.'"';
+            }
+
+            $sanitizedTags[] = '<meta '.implode(' ', $attributes).'>';
+        }
+
+        return implode("\n", $sanitizedTags);
     }
 }
