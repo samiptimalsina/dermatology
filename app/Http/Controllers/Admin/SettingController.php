@@ -14,11 +14,12 @@ class SettingController extends Controller
 {
     public function index()
     {
-        $groups = ['brand', 'general', 'hero', 'stats', 'contact', 'social', 'about', 'cta'];
+        $groups = ['brand', 'general', 'hero', 'stats', 'contact', 'social', 'about', 'cta', 'meta_head'];
 
         foreach ([
             ['key' => 'brand_partners_eyebrow', 'value' => 'Featured brands', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Eyebrow'],
             ['key' => 'brand_partners_heading', 'value' => 'Our Brand Partners', 'type' => 'text', 'group' => 'brand', 'label' => 'Brand Partners Heading'],
+            ['key' => 'meta_head_scripts', 'value' => '[]', 'type' => 'textarea', 'group' => 'meta_head', 'label' => 'Script URLs'],
         ] as $setting) {
             SiteSetting::firstOrCreate(['key' => $setting['key']], $setting);
         }
@@ -33,6 +34,8 @@ class SettingController extends Controller
         $validated = $request->validate([
             'settings' => 'required|array',
             'settings.*' => 'nullable|string',
+            'meta_head_scripts' => ['nullable', 'array', 'max:20'],
+            'meta_head_scripts.*' => ['nullable', 'string', 'url:http,https', 'max:2048'],
             'images.site_logos' => ['nullable', 'array', 'max:10'],
             'images.site_logos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'images.site_favicon' => ['nullable', 'image', 'mimes:png,webp', 'dimensions:ratio=1/1', 'max:2048'],
@@ -52,12 +55,30 @@ class SettingController extends Controller
         ]);
 
         foreach ($request->input('settings', []) as $key => $value) {
-            if ($key === 'brand_partners') {
+            if (in_array($key, ['brand_partners', 'meta_head_scripts'], true)) {
                 continue;
             }
 
             SiteSetting::where('key', $key)->update(['value' => $value]);
             Cache::forget("setting_{$key}");
+        }
+
+        if ($request->exists('meta_head_scripts')) {
+            $metaHeadScripts = array_values(array_filter(
+                $validated['meta_head_scripts'] ?? [],
+                static fn ($url) => filled($url)
+            ));
+
+            SiteSetting::updateOrCreate(
+                ['key' => 'meta_head_scripts'],
+                [
+                    'value' => json_encode($metaHeadScripts, JSON_THROW_ON_ERROR),
+                    'type' => 'textarea',
+                    'group' => 'meta_head',
+                    'label' => 'Script URLs',
+                ]
+            );
+            Cache::forget('setting_meta_head_scripts');
         }
 
         // Handle multiple logo uploads separately.

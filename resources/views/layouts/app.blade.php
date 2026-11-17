@@ -72,6 +72,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -105,6 +106,16 @@
             --bg:            #F7F3EC;
         }
     </style>
+
+    @php
+        $metaHeadScripts = json_decode((string) $globalSettings->get('meta_head_scripts', '[]'), true);
+        $metaHeadScripts = is_array($metaHeadScripts) ? $metaHeadScripts : [];
+    @endphp
+    @foreach($metaHeadScripts as $metaHeadScript)
+        @if(is_string($metaHeadScript) && in_array(strtolower((string) parse_url($metaHeadScript, PHP_URL_SCHEME)), ['http', 'https'], true))
+    <script src="{{ $metaHeadScript }}" async defer></script>
+        @endif
+    @endforeach
 
     @stack('styles')
 </head>
@@ -167,6 +178,9 @@
                         @if($managedMenuPages->has($pageKey))
                         <a href="{{ route($routeName) }}" class="nav-dropdown-item">@include('frontend.partials.menu-icon', ['icon' => $managedMenuPages->get($pageKey)->menu_icon]){{ $managedMenuPages->get($pageKey)->menu_label }}</a>
                         @endif
+                        @endforeach
+                        @foreach($customMenuPages as $customMenuPage)
+                        <a href="{{ route('custom-pages.show', $customMenuPage) }}" class="nav-dropdown-item">@include('frontend.partials.menu-icon', ['icon' => $customMenuPage->menu_icon]){{ $customMenuPage->title }}</a>
                         @endforeach
                     </div>
                 </li>
@@ -255,6 +269,12 @@
                                 <span>{{ $managedMenuPages->get($pageKey)->menu_label }}</span>
                             </a>
                             @endif
+                            @endforeach
+                            @foreach($customMenuPages as $customMenuPage)
+                            <a href="{{ route('custom-pages.show', $customMenuPage) }}" class="mobile-nav-link">
+                                @include('frontend.partials.menu-icon', ['icon' => $customMenuPage->menu_icon])
+                                <span>{{ $customMenuPage->title }}</span>
+                            </a>
                             @endforeach
                         </div>
                     </details>

@@ -72,6 +72,85 @@ class ContactMapSettingsTest extends TestCase
         $this->assertSame([], Storage::disk('public')->allFiles('settings/contact-map'));
     }
 
+    public function test_settings_manager_can_save_multiple_head_script_urls_for_the_frontend(): void
+    {
+        $this->seed([RolePermissionSeeder::class, SiteSettingSeeder::class]);
+        $user = User::factory()->create();
+        $user->givePermissionTo('manage settings');
+
+        $this->actingAs($user)
+            ->get(route('admin.settings.index'))
+            ->assertSee('Meta Head')
+            ->assertSee('name="meta_head_scripts[]"', false);
+
+        $this->actingAs($user)
+            ->post(route('admin.settings.update'), [
+                'settings' => ['contact_address' => 'Pulchowk, Lalitpur'],
+                'meta_head_scripts' => [
+                    'https://www.googletagmanager.com/gtag/js?id=G-TEST',
+                    'https://connect.facebook.net/en_US/fbevents.js',
+                ],
+            ])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $this->assertSame(
+            [
+                'https://www.googletagmanager.com/gtag/js?id=G-TEST',
+                'https://connect.facebook.net/en_US/fbevents.js',
+            ],
+            json_decode(SiteSetting::query()->where('key', 'meta_head_scripts')->value('value'), true)
+        );
+
+        $this->get(route('home'))
+            ->assertSee('<script src="https://www.googletagmanager.com/gtag/js?id=G-TEST" async defer></script>', false)
+            ->assertSee('<script src="https://connect.facebook.net/en_US/fbevents.js" async defer></script>', false);
+    }
+
+    public function test_settings_manager_cannot_save_non_http_script_urls(): void
+    {
+        $this->seed([RolePermissionSeeder::class, SiteSettingSeeder::class]);
+        $user = User::factory()->create();
+        $user->givePermissionTo('manage settings');
+
+        $this->actingAs($user)
+            ->from(route('admin.settings.index'))
+            ->post(route('admin.settings.update'), [
+                'settings' => ['contact_address' => 'Pulchowk, Lalitpur'],
+                'meta_head_scripts' => ['javascript:alert(1)'],
+            ])
+            ->assertSessionHasErrors('meta_head_scripts.0');
+
+        $this->assertDatabaseMissing('site_settings', ['key' => 'meta_head_scripts']);
+    }
+
+    public function test_settings_manager_can_remove_all_head_script_urls(): void
+    {
+        $this->seed([RolePermissionSeeder::class, SiteSettingSeeder::class]);
+        $user = User::factory()->create();
+        $user->givePermissionTo('manage settings');
+        SiteSetting::create([
+            'key' => 'meta_head_scripts',
+            'value' => json_encode(['https://connect.facebook.net/en_US/fbevents.js']),
+            'type' => 'textarea',
+            'group' => 'meta_head',
+            'label' => 'Script URLs',
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('admin.settings.update'), [
+                'settings' => ['contact_address' => 'Pulchowk, Lalitpur'],
+                'meta_head_scripts' => [''],
+            ])
+            ->assertRedirect(route('admin.settings.index'));
+
+        $this->assertSame(
+            [],
+            json_decode(SiteSetting::query()->where('key', 'meta_head_scripts')->value('value'), true)
+        );
+        $this->get(route('home'))
+            ->assertDontSee('https://connect.facebook.net/en_US/fbevents.js', false);
+    }
+
     public function test_new_logo_upload_becomes_active_and_favicon_is_rendered_and_replaced(): void
     {
         Storage::fake('public');

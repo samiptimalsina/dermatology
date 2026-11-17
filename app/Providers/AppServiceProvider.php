@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CustomPage;
 use App\Models\SiteSetting;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
@@ -25,6 +26,14 @@ class AppServiceProvider extends ServiceProvider
                 // Fail silently during migrations/setup
                 $view->with('globalSettings', collect());
             }
+        });
+
+        View::composer('layouts.app', function ($view) {
+            $view->with('customMenuPages', CustomPage::query()
+                ->where('is_published', true)
+                ->where('show_on_menu', true)
+                ->orderBy('title')
+                ->get());
         });
     }
 }

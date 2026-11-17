@@ -1,4 +1,8 @@
 @php
+    $materialIcon = str_starts_with($icon, 'material:')
+        ? substr($icon, strlen('material:'))
+        : null;
+
     $menuIconPaths = [
         'home' => 'M3 12l9-9 9 9M5 10v10h14V10M9 20v-6h6v6',
         'services' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
@@ -12,6 +16,10 @@
         'link' => 'M10 13a5 5 0 007.54.54l2-2a5 5 0 00-7.07-7.07l-1.15 1.15m2.68 5.38a5 5 0 01-7.54-.54l-2-2a5 5 0 017.07-7.07l1.15-1.15',
     ];
 @endphp
-<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+@if($materialIcon)
+<span class="material-symbols-outlined inline-flex h-4 w-4 shrink-0 items-center justify-center text-base leading-none" data-menu-icon aria-hidden="true">{{ $materialIcon }}</span>
+@else
+<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" data-menu-icon>
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $menuIconPaths[$icon] ?? $menuIconPaths['info'] }}"/>
 </svg>
+@endif

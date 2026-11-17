@@ -9,6 +9,13 @@
     }
     $brandPartners = json_decode(App\Models\SiteSetting::get('brand_partners', '[]'), true);
     $brandPartners = is_array($brandPartners) ? $brandPartners : [];
+    $metaHeadScripts = json_decode(App\Models\SiteSetting::get('meta_head_scripts', '[]'), true);
+    $metaHeadScripts = is_array($metaHeadScripts) ? $metaHeadScripts : [];
+    $metaHeadScripts = old('meta_head_scripts', $metaHeadScripts);
+    $metaHeadScripts = is_array($metaHeadScripts)
+        ? array_values(array_map(static fn ($url) => is_string($url) ? $url : '', $metaHeadScripts))
+        : [];
+    $metaHeadScripts = $metaHeadScripts ?: [''];
 @endphp
 
 <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
@@ -18,7 +25,7 @@
         @foreach($groups as $tabGroup)
         <button type="button" class="settings-tab whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold {{ $loop->first ? 'active' : '' }}"
                 data-settings-tab="settings-panel-{{ $tabGroup }}" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}">
-            {{ $tabGroup === 'brand' ? 'Brand & Partners' : ucfirst($tabGroup).' Settings' }}
+            {{ $tabGroup === 'brand' ? 'Brand & Partners' : ($tabGroup === 'meta_head' ? 'Meta Head' : ucfirst($tabGroup).' Settings') }}
         </button>
         @endforeach
     </div>
@@ -51,7 +58,7 @@
             @endif
             <div>
                 <h2 class="font-bold text-sm capitalize" style="color:var(--dark)">
-                    {{ $group === 'brand' ? '🎨 Brand & Partners' : ucfirst($group).' Settings' }}
+                    {{ $group === 'brand' ? '🎨 Brand & Partners' : ($group === 'meta_head' ? 'Meta Head' : ucfirst($group).' Settings') }}
                 </h2>
                 @if($group === 'brand')
                 <p class="text-xs mt-0.5" style="color:var(--muted)">
@@ -72,8 +79,47 @@
                         {{ $setting->label }}
                     </label>
 
+                    {{-- External scripts for the public document head --}}
+                    @if($setting->key === 'meta_head_scripts')
+                    <div class="space-y-3">
+                        <div id="meta-head-script-rows" class="space-y-3">
+                            @foreach($metaHeadScripts as $index => $scriptUrl)
+                            <div data-meta-script-row="{{ $index }}" class="flex items-center gap-3">
+                                <input type="url"
+                                       id="meta_head_script_{{ $index }}"
+                                       name="meta_head_scripts[]"
+                                       value="{{ $scriptUrl }}"
+                                       placeholder="https://www.googletagmanager.com/gtag/js?id=..."
+                                       aria-label="External script URL"
+                                       class="form-input">
+                                <button type="button" class="btn-outline" data-remove-meta-script aria-label="Remove script URL">
+                                    Remove
+                                </button>
+                            </div>
+                            @endforeach
+                        </div>
+                        <input type="hidden" name="meta_head_scripts[]" value="">
+                        <template id="meta-head-script-row-template">
+                            <div data-meta-script-row="__INDEX__" class="flex items-center gap-3">
+                                <input type="url"
+                                       id="meta_head_script___INDEX__"
+                                       name="meta_head_scripts[]"
+                                       placeholder="https://www.googletagmanager.com/gtag/js?id=..."
+                                       aria-label="External script URL"
+                                       class="form-input">
+                                <button type="button" class="btn-outline" data-remove-meta-script aria-label="Remove script URL">
+                                    Remove
+                                </button>
+                            </div>
+                        </template>
+                        <button type="button" id="add-meta-head-script" class="btn-outline">Add script URL</button>
+                        <p class="text-xs" style="color:var(--muted)">
+                            Add one HTTPS or HTTP script URL per row, such as a Google or Meta Ads script CDN URL.
+                        </p>
+                    </div>
+
                     {{-- Color picker --}}
-                    @if($setting->type === 'color')
+                    @elseif($setting->type === 'color')
                     <div class="color-picker-wrap">
                         <input type="color"
                                id="color_swatch_{{ $setting->key }}"
@@ -400,6 +446,28 @@
         rows.addEventListener('click', function (event) {
             const removeButton = event.target.closest('[data-remove-brand-partner-row]');
             if (removeButton) removeButton.closest('[data-brand-partner-upload]').remove();
+        });
+    })();
+
+    (function () {
+        const addButton = document.getElementById('add-meta-head-script');
+        const rows = document.getElementById('meta-head-script-rows');
+        const template = document.getElementById('meta-head-script-row-template');
+
+        if (!addButton || !rows || !template) return;
+
+        let nextIndex = Array.from(rows.querySelectorAll('[data-meta-script-row]'))
+            .reduce(function (highestIndex, row) {
+                return Math.max(highestIndex, Number(row.dataset.metaScriptRow) + 1);
+            }, 0);
+
+        addButton.addEventListener('click', function () {
+            rows.insertAdjacentHTML('beforeend', template.innerHTML.replaceAll('__INDEX__', String(nextIndex++)));
+        });
+
+        rows.addEventListener('click', function (event) {
+            const removeButton = event.target.closest('[data-remove-meta-script]');
+            if (removeButton) removeButton.closest('[data-meta-script-row]').remove();
         });
     })();
 

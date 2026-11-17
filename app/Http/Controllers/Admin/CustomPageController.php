@@ -78,6 +78,8 @@ class CustomPageController extends Controller
             'meta_description' => ['nullable', 'string', 'max:500'],
             'no_index' => ['boolean'],
             'is_published' => ['boolean'],
+            'show_on_menu' => ['boolean'],
+            'menu_icon' => ['sometimes', 'string', Rule::in(array_keys(CustomPage::menuIconOptions()))],
         ]);
     }
 }
